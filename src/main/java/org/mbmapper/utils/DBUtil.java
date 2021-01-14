@@ -25,6 +25,9 @@ public class DBUtil {
 		DBUtil.pwd = password;
 	}
 
+	/**
+	 * 获取连接对象
+	 */
 	public static Connection getConn() {
 		Connection conn = null;
 		try {
@@ -36,6 +39,9 @@ public class DBUtil {
 
 	}
 
+	/**
+	 * 关闭连接
+	 */
 	public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
 		try {
 			if (rs != null) {

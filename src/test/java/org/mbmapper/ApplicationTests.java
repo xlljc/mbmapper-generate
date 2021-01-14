@@ -1,19 +1,16 @@
 package org.mbmapper;
 
 import org.junit.jupiter.api.Test;
-import org.mbmapper.test.dao.UserDao;
+import org.mbmapper_test.test.dao.UserDao;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.w3c.dom.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.net.URL;
 
 @SpringBootTest
-@MapperScan("org.mbmapper.test.dao")
+@MapperScan("org.mbmapper_test.test.dao")
 class ApplicationTests {
 
     @Autowired
@@ -28,7 +25,7 @@ class ApplicationTests {
     @Test
     void test1() {
         //URL url = getClass().getClassLoader().getResource("mapper/UserDao.xml");
-        URL url = getClass().getClassLoader().getResource("org/mbmapper/test/dao/UserDao.class");
+        URL url = getClass().getClassLoader().getResource("org/mbmapper_test/test/dao/UserDao.class");
         System.out.println(url);
         assert url != null;
         File file = new File(url.getFile());

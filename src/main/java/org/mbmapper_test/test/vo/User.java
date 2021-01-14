@@ -1,4 +1,4 @@
-package org.mbmapper.test.vo;
+package org.mbmapper_test.test.vo;
 
 
 import lombok.AllArgsConstructor;

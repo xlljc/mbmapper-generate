@@ -1,6 +1,6 @@
-package org.mbmapper.test.dao;
+package org.mbmapper_test.test.dao;
 
-import org.mbmapper.test.vo.User;
+import org.mbmapper_test.test.vo.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

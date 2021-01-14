@@ -13,7 +13,7 @@ public class TestRun {
         MbMapperConfig config = new MbMapperConfig("mbmapper.properties");
         System.out.println(config);
         MbMapper mbMapper = new MbMapper(config);
-        mbMapper.generate();
+        mbMapper.generateVo();
 
     }
 

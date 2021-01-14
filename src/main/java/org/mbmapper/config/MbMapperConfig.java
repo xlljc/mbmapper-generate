@@ -38,7 +38,13 @@ public class MbMapperConfig {
     /** xml文件保存路径, 默认在dao层接口文件夹下 */
     private String xmlDir;
 
+    /** 要写出的表, 默认没有 */
+    private String tables = "[]";
 
+    /**
+     * 带配置文件的初始化
+     * @param propertiesFile 配置文件地址路径, 使用相对路径
+     */
     public MbMapperConfig(String propertiesFile) throws IOException {
         new PropertyLoader().load(this,propertiesFile);
     }

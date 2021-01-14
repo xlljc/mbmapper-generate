@@ -9,5 +9,5 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
-  type-aliases-package: org.mbmapper.test.vo
+  type-aliases-package: org.mbmapper_test.test.vo
   mapper-locations: classpath:mapper/*.xml
