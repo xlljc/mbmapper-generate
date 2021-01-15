@@ -24,7 +24,7 @@ public class PropertyLoader {
         //获取配置文件url
         URL url = getClass().getClassLoader().getResource(propertiesFile);
         //如果没有该文件就抛出异常
-        if (url == null) throw new IOException(String.format("file '%s' not found!", propertiesFile));
+        if (url == null) throw new IOException(String.format("Properties file '%s' not found!", propertiesFile));
         InputStream inputStream = new FileInputStream(url.getFile());
 
         //加载配置文件

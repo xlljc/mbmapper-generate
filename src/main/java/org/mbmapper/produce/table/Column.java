@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TableColumn {
+public class Column {
     /**
      * 列名
      */
@@ -35,6 +35,16 @@ public class TableColumn {
      * 是否是主键
      */
     private boolean primaryKey;
+
+    /**
+     * 是否非空
+     */
+    private boolean notNull;
+
+    /**
+     * 是否是唯一键
+     */
+    private boolean unique;
 
     /**
      * 列注释
