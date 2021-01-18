@@ -1,11 +1,14 @@
 package org.mbmapper.produce.dao;
 
+import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.table.Column;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.utils.DBUtil;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +17,38 @@ import java.util.Map;
 public class TableStructDao {
 
     /**
+     * 配置文件
+     */
+    private final MbMapperConfig config;
+
+    /**
+     * 代配置初始化
+     */
+    public TableStructDao(MbMapperConfig config) {
+        this.config = config;
+    }
+
+    /**
+     * 获取数据库中所有的表名称
+     *
+     * @return 表名称集合
+     */
+    public List<String> getAllTableNames() throws SQLException {
+        List<String> tableNames = new ArrayList<>();
+
+        Connection connection = ConnectDevice.getConnection();
+        DatabaseMetaData metaData = connection.getMetaData();
+        //获取所有表, 遍历
+        ResultSet tables = metaData.getTables(connection.getCatalog(), null, null, null);
+        while (tables.next()) {
+            tableNames.add(tables.getString("TABLE_NAME"));
+        }
+        return tableNames;
+    }
+
+    /**
      * 根据表名获取表结构, 获取表的所有列名以及对应的类型
+     *
      * @param tableName 表名
      */
     public Table getTableStruct(String tableName) throws SQLException {
@@ -93,8 +127,9 @@ public class TableStructDao {
 
     /**
      * 获取列元数据
+     *
      * @param columnSet 包含列的 ResultSet 对象
-     * @param column 列对象
+     * @param column    列对象
      */
     private void _columnMeta(ResultSet columnSet, Column column) throws SQLException {
         //获取列名
@@ -120,6 +155,10 @@ public class TableStructDao {
         column.setDefaultVal(defaultVal);
         column.setComment(comment);
         column.setNotNull(notNull);
+    }
+
+    private void _foreignKeyMeta() {
+
     }
 
 }

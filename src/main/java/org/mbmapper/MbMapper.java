@@ -4,6 +4,7 @@ import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.dao.ConnectDevice;
 import org.mbmapper.produce.dao.TableStructDao;
 import org.mbmapper.produce.table.Table;
+import org.mbmapper.produce.table.TargetTables;
 import org.mbmapper.utils.DBUtil;
 
 import java.sql.SQLException;
@@ -11,9 +12,7 @@ import java.sql.SQLException;
 
 public class MbMapper {
 
-    /**
-     * 传入的配置文件
-     */
+    /** 传入的配置文件 */
     private final MbMapperConfig config;
 
     public MbMapper(MbMapperConfig config) throws ClassNotFoundException {
@@ -57,9 +56,12 @@ public class MbMapper {
      * 执行生成操作, 只生成Vo代码
      */
     public void generateVo() throws SQLException {
-        TableStructDao tableStructDao = new TableStructDao();
-        Table table = tableStructDao.getTableStruct("teat_table");
-        System.out.println(table);
+        //TableStructDao tableStructDao = new TableStructDao(config);
+        //Table table = tableStructDao.getTableStruct("user");
+        //System.out.println(table);
+
+        TargetTables targetTables = new TargetTables(config);
+
     }
 
 

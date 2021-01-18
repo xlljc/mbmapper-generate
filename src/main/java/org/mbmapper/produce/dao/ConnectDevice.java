@@ -26,7 +26,7 @@ public class ConnectDevice {
             connection = DBUtil.getConn();
             flag = true;
         }
-        System.out.println("ConnectDevice.open() => ...");
+        System.out.println("ConnectDevice.open(): => ...");
     }
 
     /**
@@ -37,7 +37,7 @@ public class ConnectDevice {
             DBUtil.close(connection, null, null);
             flag = false;
         }
-        System.out.println("ConnectDevice.close() => ...");
+        System.out.println("ConnectDevice.close(): => ...");
     }
 
     /**

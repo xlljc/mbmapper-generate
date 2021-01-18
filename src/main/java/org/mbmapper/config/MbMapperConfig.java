@@ -36,8 +36,14 @@ public class MbMapperConfig {
     /** xml文件保存路径, 默认在dao层接口文件夹下 */
     private String xmlDir;
 
-    /** 要写出的表, 默认没有 */
-    private String tables = "[]";
+    /** xml文件名称后缀, 默认'Mapper' */
+    private String suffixStr = "Mapper";
+
+    /** 是否启用捆绑关联表, 默认 false, 当开启后, 如果表 a 外键关联着表 b, 而你在 tables 中没有配置生成表 b, 那么系统会帮助你生成表 b */
+    private boolean useRope = false;
+
+    /** 要写出的表, 默认写出所有的表 */
+    private String tables = "*";
 
     /**
      * 创建一个配置类
