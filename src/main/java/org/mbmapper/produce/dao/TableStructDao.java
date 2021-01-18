@@ -2,6 +2,7 @@ package org.mbmapper.produce.dao;
 
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.table.Column;
+import org.mbmapper.produce.table.ForeignKey;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.utils.DBUtil;
 
@@ -67,10 +68,8 @@ public class TableStructDao {
         //通过元数据获取表的所有列
         ResultSet columns = metaData.getColumns(connection.getCatalog(), null, tableName, null);
         while (columns.next()) {
-            Column column = new Column();
             //获取数据
-            _columnMeta(columns, column);
-
+            Column column = _columnMeta(columns);
             //根据列名称加入到 columnMap 集合中
             columnMap.put(column.getName(), column);
 
@@ -121,6 +120,17 @@ public class TableStructDao {
             }
         });
 
+        //获取外键列表
+        Map<String, ForeignKey> foreignKeyMap = new HashMap<>();
+        table.setForeignKeyMap(foreignKeyMap);
+
+        ResultSet importedKeys = metaData.getImportedKeys(connection.getCatalog(), null, tableName);
+        while (importedKeys.next()) {
+            ForeignKey foreignKey = _foreignKeyMeta(importedKeys, tableName);
+            foreignKeyMap.put(foreignKey.getFkColumn(), foreignKey);
+        }
+        DBUtil.close(null, null, importedKeys);
+
         return table;
     }
 
@@ -129,9 +139,9 @@ public class TableStructDao {
      * 获取列元数据
      *
      * @param columnSet 包含列的 ResultSet 对象
-     * @param column    列对象
      */
-    private void _columnMeta(ResultSet columnSet, Column column) throws SQLException {
+    private Column _columnMeta(ResultSet columnSet) throws SQLException {
+        Column column = new Column();
         //获取列名
         String columnName = columnSet.getString("COLUMN_NAME");
         //获取类型
@@ -155,10 +165,22 @@ public class TableStructDao {
         column.setDefaultVal(defaultVal);
         column.setComment(comment);
         column.setNotNull(notNull);
+        return column;
     }
 
-    private void _foreignKeyMeta() {
-
+    /**
+     * 获取外键元数据
+     * @param importedKeys 包含外键的 ResultSet 集合
+     * @param tableName 当前表名
+     */
+    private ForeignKey _foreignKeyMeta(ResultSet importedKeys,String tableName) throws SQLException {
+        //外键列名
+        String fkColumnName = importedKeys.getString("FKCOLUMN_NAME");
+        //主键表名
+        String pkTableName = importedKeys.getString("PKTABLE_NAME");
+        //主键列名
+        String pkColumnName = importedKeys.getString("PKCOLUMN_NAME");
+        return new ForeignKey(tableName, pkTableName, fkColumnName, pkColumnName);
     }
 
 }

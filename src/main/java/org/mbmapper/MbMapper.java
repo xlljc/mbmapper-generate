@@ -2,8 +2,6 @@ package org.mbmapper;
 
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.dao.ConnectDevice;
-import org.mbmapper.produce.dao.TableStructDao;
-import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
 import org.mbmapper.utils.DBUtil;
 
@@ -61,6 +59,8 @@ public class MbMapper {
         //System.out.println(table);
 
         TargetTables targetTables = new TargetTables(config);
+        targetTables.load();
+        System.out.println(targetTables.getTables());
 
     }
 

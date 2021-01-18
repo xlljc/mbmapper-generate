@@ -7,9 +7,7 @@ import org.mbmapper.produce.dao.TableStructDao;
 import org.mbmapper.utils.RegexUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 需要写出的tables
@@ -24,7 +22,10 @@ public class TargetTables {
     private List<String> tableNames;
 
     /** 所有需要写出的表对象 */
-    private List<Column> tables;
+    private Map<String,Table> tables;
+
+
+    private final TableStructDao structDao;
 
     /**
      * 初始化, 加载所有表
@@ -32,8 +33,7 @@ public class TargetTables {
      */
     public TargetTables(MbMapperConfig config) throws SQLException {
         this.config = config;
-
-        TableStructDao structDao = new TableStructDao(config);
+        structDao = new TableStructDao(config);
 
         //读取配置
         String tablesStr = config.getTables();
@@ -44,7 +44,6 @@ public class TargetTables {
             tableNames = structDao.getAllTableNames();
 
         } else if (RegexUtil.matches("^\\s*!\\s*\\[[\\s\\S]*]$", tablesStr)) {           //不包含的表
-            //"".replaceAll("^\\s*!\\s*\\[[\\s\\S]*]$","");
             tablesStr = tablesStr.replaceAll("(^\\s*!)|(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
             System.out.printf("TargetTables.TargetTables(): => Table not included [%s]%n", tablesStr);
             //获取所有的表
@@ -66,10 +65,19 @@ public class TargetTables {
             tableNames = new ArrayList<>();
         }
         System.out.printf("TargetTables.TargetTables(): => %s%n", tableNames);
-
     }
 
 
+    public void load() throws SQLException {
+        tables = new HashMap<>();
+
+        //先来基础的, 直接遍历
+        for (String name : tableNames) {
+            Table table = structDao.getTableStruct(name);
+            tables.put(table.getName(), table);
+        }
+
+    }
 
 
 }
