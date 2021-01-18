@@ -19,7 +19,12 @@ public class Column {
     /**
      * 值类型
      */
-    private String type;
+    private int type;
+
+    /**
+     * 值类型名称
+     */
+    private String typeName;
 
     /**
      * 默认值

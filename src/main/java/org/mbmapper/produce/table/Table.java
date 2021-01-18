@@ -20,6 +20,11 @@ public class Table {
     private String name;
 
     /**
+     * 表注释
+     */
+    private String comment;
+
+    /**
      * 主键列
      */
     private String pkColumn;
@@ -28,8 +33,6 @@ public class Table {
      * 自增长列
      */
     private String aiColumn;
-
-
 
     /**
      * 表列数据

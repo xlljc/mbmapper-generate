@@ -14,11 +14,14 @@ public class TestRun {
         MbMapperConfig config = new MbMapperConfig();
         System.out.println(config);
         MbMapper mbMapper = new MbMapper(config);
+        mbMapper.init();
         //mbMapper.generate();
         try {
             mbMapper.generateVo();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } finally {
+            mbMapper.close();
         }
     }
 

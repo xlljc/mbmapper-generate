@@ -1,10 +1,7 @@
 package org.mbmapper.produce.dao;
 
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import org.mbmapper.utils.DBUtil;
 
@@ -44,27 +41,40 @@ public class ConnectDevice {
     }
 
     /**
-     * 执行连接查询操作, 调用 ConnectHandle 中的方法
+     * 获取连接对象, 请勿手动关闭连接对象
      */
-    public static void connect(ConnectHandle handle) throws SQLException {
+    public static Connection getConnection() {
+        //如果没打卡连接,抛出异常
         if (!flag)
             try {
                 throw new ConnectNotOpenedException("The open() method must be called before the connect() method is called.");
             } catch (ConnectNotOpenedException e) {
                 e.printStackTrace();
             }
-        else {
-            PreparedStatement statement = null;
-            ResultSet resultSet = null;
-            try {
-                statement = handle.prepare(connection);
-                if (statement == null)
-                    throw new NullPointerException("The ConnectHandle.prepare() method cannot return null.");
-                resultSet = statement.executeQuery();
-                handle.success(resultSet);
-            } finally {
-                DBUtil.close(null, statement, resultSet);
-            }
+        return connection;
+    }
+
+    /**
+     * 获取数据库元数据
+     */
+    public static DatabaseMetaData getMetaData() throws SQLException {
+        Connection connection = getConnection();
+        return connection != null ? connection.getMetaData() : null;
+    }
+
+    /**
+     * 执行连接查询操作, 委托 QueryHandle
+     */
+    public static void query(QueryHandle handle) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            if ((statement = handle.prepare(connection)) == null)
+                throw new NullPointerException("The ConnectHandle.prepare() method cannot return null.");
+            handle.success(resultSet = statement.executeQuery());
+        } finally {
+            DBUtil.close(null, statement, resultSet);
         }
     }
 

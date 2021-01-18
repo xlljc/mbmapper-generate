@@ -2,13 +2,11 @@ package org.mbmapper.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.mbmapper.utils.PropertyLoader;
 
 import java.io.IOException;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class MbMapperConfig {
 

@@ -58,7 +58,8 @@ public class MbMapper {
      */
     public void generateVo() throws SQLException {
         TableStructDao tableStructDao = new TableStructDao();
-        Table table = tableStructDao.getTableStruct("user");
+        Table table = tableStructDao.getTableStruct("teat_table");
+        System.out.println(table);
     }
 
 

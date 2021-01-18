@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * 连接数据库执行自定义操作
  */
-public interface ConnectHandle {
+public interface QueryHandle {
 
     /**
      * 执行查询前的准备工作, 创建sql预编译对象
