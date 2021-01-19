@@ -106,7 +106,8 @@ public class TargetTables {
         for (String s : keySet) {
             Table table = tables.get(s);
             //日志字符串
-            StringBuilder logStr = new StringBuilder(String.format("              table: => tableName: %s%n                         column: ", s));
+            StringBuilder logStr = new StringBuilder(
+                    String.format("              table: => tableName: %s%n                        column: ", s));
 
             Map<String, Column> columnMap = table.getColumnMap();
             //遍历列

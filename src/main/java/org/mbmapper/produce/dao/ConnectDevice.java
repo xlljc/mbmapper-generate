@@ -3,6 +3,7 @@ package org.mbmapper.produce.dao;
 
 import java.sql.*;
 
+import org.mbmapper.produce.MbLog;
 import org.mbmapper.utils.DBUtil;
 
 public class ConnectDevice {
@@ -26,7 +27,7 @@ public class ConnectDevice {
             connection = DBUtil.getConn();
             flag = true;
         }
-        System.out.println("ConnectDevice.open(): => ...");
+        MbLog.log("ConnectDevice.close(): => Open connection successfully.");
     }
 
     /**
@@ -37,7 +38,7 @@ public class ConnectDevice {
             DBUtil.close(connection, null, null);
             flag = false;
         }
-        System.out.println("ConnectDevice.close(): => ...");
+        MbLog.log("ConnectDevice.close(): => The connection is broken.");
     }
 
     /**

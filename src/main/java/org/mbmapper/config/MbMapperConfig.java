@@ -12,6 +12,8 @@ public class MbMapperConfig {
 
     /** 是否打印详细日志, 默认false */
     private boolean printLog = false;
+    /** 日志存放地址, 默认 ./mbmapper.log */
+    private String logPath = "./mbmapper.log";
 
     /** 数据库连接url */
     private String url;

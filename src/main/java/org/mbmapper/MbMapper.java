@@ -9,7 +9,6 @@ import org.mbmapper.utils.DBUtil;
 
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.Set;
 
 
 public class MbMapper {
@@ -27,10 +26,10 @@ public class MbMapper {
      * 初始化调用, 在创建实例后第一个调用的方法应该是此方法, 用于初始化表数据
      */
     public void init() {
-        // 打开数据库连接
-        ConnectDevice.open();
         // 打开日志
         MbLog.start(config);
+        // 打开数据库连接
+        ConnectDevice.open();
     }
 
     /**

@@ -1,6 +1,14 @@
 package org.mbmapper.produce;
 
 import org.mbmapper.config.MbMapperConfig;
+import org.mbmapper.utils.RegexUtil;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 日志输出类
@@ -114,9 +122,24 @@ public class MbLog {
      * 执行写出操作, 将日志写出到磁盘中
      */
     public static void write() {
-        //-- test --
-        System.out.println("写出日志: ");
-        System.out.println(logStr.toString());
+        String logPath;
+        //获取配置项 logPath 的路径, 提取其中的保存文件名, 如果不存在, 就使用默认的名称
+        if (!RegexUtil.matches(".*[^/\\\\]+\\..+$", config.getLogPath())) { //没写详细名称
+            logPath = config.getLogPath() + "/mbmapper.log";
+        } else { //写了详细名称
+            logPath = config.getLogPath();
+        }
+
+        File file = new File(logPath);
+        try {
+            //写出操作
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(logStr.toString().getBytes());
+            fileOutputStream.close();
+            fileOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
