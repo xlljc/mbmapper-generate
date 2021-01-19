@@ -3,7 +3,9 @@ package org.mbmapper.produce.table;
 import lombok.Data;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.config.MbMapperConfigException;
+import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.TableStructDao;
+import org.mbmapper.utils.MbListUtils;
 import org.mbmapper.utils.RegexUtil;
 
 import java.sql.SQLException;
@@ -39,13 +41,13 @@ public class TargetTables {
         String tablesStr = config.getTables();
 
         if (RegexUtil.matches("^\\s*\\*\\s*$", tablesStr)) {    //是否为全部的表
-            System.out.println("TargetTables.TargetTables(): => All of the table");
+            MbLog.logInfo("TargetTables.TargetTables(): => All of the table");
             //获取所有的表
             tableNames = structDao.getAllTableNames();
 
         } else if (RegexUtil.matches("^\\s*!\\s*\\[[\\s\\S]*]$", tablesStr)) {  //不包含的表
             tablesStr = tablesStr.replaceAll("(^\\s*!)|(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
-            System.out.printf("TargetTables.TargetTables(): => Table not included [%s]%n", tablesStr);
+            MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table not included [%s]", tablesStr));
             //获取所有的表
             tableNames = structDao.getAllTableNames();
             //分割表
@@ -55,7 +57,7 @@ public class TargetTables {
 
         } else if (RegexUtil.matches("^\\s*\\[[\\s\\S]*]$", tablesStr)) {   //指定的表
             tablesStr = tablesStr.replaceAll("(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
-            System.out.printf("TargetTables.TargetTables(): => Table included [%s]%n", tablesStr);
+            MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table included [%s]", tablesStr));
 
             //分割表
             tableNames = new ArrayList<>(Arrays.asList(tablesStr.split(",")));
@@ -64,7 +66,7 @@ public class TargetTables {
                     .printStackTrace();
             tableNames = new ArrayList<>();
         }
-        System.out.printf("TargetTables.TargetTables(): => %s%n", tableNames);
+        MbLog.logInfo(String.format("TargetTables.TargetTables(): => %s", tableNames));
     }
 
 
@@ -87,9 +89,49 @@ public class TargetTables {
             }
             tables.put(table.getName(), table);
         }
+        //打印日志
+        _loadLog();
 
+    }
 
+    /**
+     * 输出读取日志, 打印所有表
+     */
+    private void _loadLog() {
+        // 日志打印
+        MbLog.line();
+        MbLog.logSuccess("TargetTables.load(): => The table was loaded successfully, printed as follows:");
+        //遍历表
+        Set<String> keySet = tables.keySet();
+        for (String s : keySet) {
+            Table table = tables.get(s);
+            //日志字符串
+            StringBuilder logStr = new StringBuilder(String.format("              table: => tableName: %s%n                         column: ", s));
 
+            Map<String, Column> columnMap = table.getColumnMap();
+            //遍历列
+            Set<String> set = columnMap.keySet();
+            for (String s1 : set) {
+                Column column = columnMap.get(s1);
+                String str = column.getName();
+                List<String> temp = new ArrayList<>();
+                //如果该列存在外键
+                if (table.getForeignKeyMap().containsKey(column.getName()))
+                    temp.add("fk");
+                //如果该列是主键
+                if (column.isPrimaryKey())
+                    temp.add("pk");
+                //如果该列是自增长列
+                if (column.isAutoIncrement())
+                    temp.add("incr");
+
+                //拼接字符串
+                if (temp.size() > 0)
+                    str += MbListUtils.join(temp, ",", "(", ")");
+                logStr.append(str).append("  ");
+            }
+            MbLog.log(logStr.toString());
+        }
     }
 
 

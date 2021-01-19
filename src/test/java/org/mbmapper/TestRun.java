@@ -12,7 +12,6 @@ public class TestRun {
     @Test
     void test1() throws IOException, ClassNotFoundException {
         MbMapperConfig config = new MbMapperConfig();
-        System.out.println(config);
         MbMapper mbMapper = new MbMapper(config);
         mbMapper.init();
         //mbMapper.generate();

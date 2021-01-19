@@ -1,6 +1,7 @@
 package org.mbmapper;
 
 import org.mbmapper.config.MbMapperConfig;
+import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.ConnectDevice;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
@@ -28,6 +29,8 @@ public class MbMapper {
     public void init() {
         // 打开数据库连接
         ConnectDevice.open();
+        // 打开日志
+        MbLog.start(config);
     }
 
     /**
@@ -36,6 +39,8 @@ public class MbMapper {
     public void close() {
         // 关闭数据库连接
         ConnectDevice.close();
+        // 执行写出操作
+        MbLog.write();
     }
 
     /**
@@ -64,11 +69,7 @@ public class MbMapper {
         TargetTables targetTables = new TargetTables(config);
         targetTables.load();
         Map<String, Table> tables = targetTables.getTables();
-        Set<String> keySet = tables.keySet();
-        for (String s : keySet) {
-            Table table = tables.get(s);
-            System.out.printf("generateVo(): => tableName: %s, table: %s%n", s, table);
-        }
+
 
     }
 
