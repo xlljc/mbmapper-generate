@@ -1,4 +1,4 @@
-package org.mbmapper.produce.dao;
+package org.mbmapper.config;
 
 
 /**

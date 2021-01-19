@@ -51,10 +51,12 @@ public class TableStructDao {
      * 根据表名获取表结构, 获取表的所有列名以及对应的类型
      *
      * @param tableName 表名
+     * @param tableNames 所有的表名
      */
-    public Table getTableStruct(String tableName) throws SQLException {
+    public Table getTableStruct(String tableName,final List<String> tableNames) throws SQLException {
         //table对象
         Table table = new Table();
+        table.setName(tableName);
 
         //创建表的列结构, map键值对
         Map<String, Column> columnMap = new HashMap<>();
@@ -125,9 +127,23 @@ public class TableStructDao {
         table.setForeignKeyMap(foreignKeyMap);
 
         ResultSet importedKeys = metaData.getImportedKeys(connection.getCatalog(), null, tableName);
-        while (importedKeys.next()) {
-            ForeignKey foreignKey = _foreignKeyMeta(importedKeys, tableName);
-            foreignKeyMap.put(foreignKey.getFkColumn(), foreignKey);
+        if (config.isUseRope()) {   //开启了捆绑关联
+            while (importedKeys.next()) {
+                ForeignKey foreignKey = _foreignKeyMeta(importedKeys, tableName);
+                //如果外键表不在写出列队中, 就将外键表写入到列队中
+                if (!tableNames.contains(foreignKey.getOtherTable())) {
+                    tableNames.add(foreignKey.getOtherTable());
+                }
+                foreignKeyMap.put(foreignKey.getFkColumn(), foreignKey);
+            }
+        } else {    //未开启捆绑关联
+            while (importedKeys.next()) {
+                ForeignKey foreignKey = _foreignKeyMeta(importedKeys, tableName);
+                //如果外键表不在写出列队中, 当前表就不显该示外键
+                if (tableNames.contains(foreignKey.getOtherTable())) {
+                    foreignKeyMap.put(foreignKey.getFkColumn(), foreignKey);
+                }
+            }
         }
         DBUtil.close(null, null, importedKeys);
 

@@ -50,7 +50,7 @@ public class MbMapperConfig {
      * 使用默认的配置路径加载配置路径, 配置文件在 classpath:mbmapper.properties
      */
     public MbMapperConfig() throws IOException {
-        new PropertyLoader().load(this,"mbmapper.properties");
+        new PropertyLoader().load(this, "mbmapper.properties");
     }
 
     /**
@@ -59,7 +59,7 @@ public class MbMapperConfig {
      * @param propertiesFile 配置文件地址路径, 使用相对路径
      */
     public MbMapperConfig(String propertiesFile) throws IOException {
-        new PropertyLoader().load(this,propertiesFile);
+        new PropertyLoader().load(this, propertiesFile);
     }
 
 }

@@ -2,7 +2,7 @@ package org.mbmapper.produce.table;
 
 import lombok.Data;
 import org.mbmapper.config.MbMapperConfig;
-import org.mbmapper.produce.dao.MbMapperConfigException;
+import org.mbmapper.config.MbMapperConfigException;
 import org.mbmapper.produce.dao.TableStructDao;
 import org.mbmapper.utils.RegexUtil;
 
@@ -28,7 +28,7 @@ public class TargetTables {
     private final TableStructDao structDao;
 
     /**
-     * 初始化, 加载所有表
+     * 初始化, 加载所有表名
      * @param config 配置文件
      */
     public TargetTables(MbMapperConfig config) throws SQLException {
@@ -38,12 +38,12 @@ public class TargetTables {
         //读取配置
         String tablesStr = config.getTables();
 
-        if (RegexUtil.matches("^\\s*\\*\\s*$", tablesStr)) {                  //是否为全部的表
+        if (RegexUtil.matches("^\\s*\\*\\s*$", tablesStr)) {    //是否为全部的表
             System.out.println("TargetTables.TargetTables(): => All of the table");
             //获取所有的表
             tableNames = structDao.getAllTableNames();
 
-        } else if (RegexUtil.matches("^\\s*!\\s*\\[[\\s\\S]*]$", tablesStr)) {           //不包含的表
+        } else if (RegexUtil.matches("^\\s*!\\s*\\[[\\s\\S]*]$", tablesStr)) {  //不包含的表
             tablesStr = tablesStr.replaceAll("(^\\s*!)|(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
             System.out.printf("TargetTables.TargetTables(): => Table not included [%s]%n", tablesStr);
             //获取所有的表
@@ -53,13 +53,13 @@ public class TargetTables {
             //移除包含的表
             tableNames.removeAll(notTables);
 
-        } else if (RegexUtil.matches("^\\s*\\[[\\s\\S]*]$", tablesStr)) {                                                                    //包含的表
+        } else if (RegexUtil.matches("^\\s*\\[[\\s\\S]*]$", tablesStr)) {   //指定的表
             tablesStr = tablesStr.replaceAll("(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
             System.out.printf("TargetTables.TargetTables(): => Table included [%s]%n", tablesStr);
 
             //分割表
-            tableNames = Arrays.asList(tablesStr.split(","));
-        } else {
+            tableNames = new ArrayList<>(Arrays.asList(tablesStr.split(",")));
+        } else {    //不认识的配置项
             new MbMapperConfigException(String.format("Cannot load configuration 'tables': '%s',please check your syntax.", tablesStr))
                     .printStackTrace();
             tableNames = new ArrayList<>();
@@ -68,14 +68,27 @@ public class TargetTables {
     }
 
 
+    /**
+     * 加载类的表的构造, 之后就可以获取 tables 了
+     */
     public void load() throws SQLException {
         tables = new HashMap<>();
-
+        //tableNames.
         //先来基础的, 直接遍历
-        for (String name : tableNames) {
-            Table table = structDao.getTableStruct(name);
+        int length = tableNames.size();
+        for (int i = 0; i < length; i++) {
+            String name = tableNames.get(i);
+            //获取表结构, 如果 tableNames 被修改, 那么索引会变化
+            Table table = structDao.getTableStruct(name, tableNames);
+            //如果长度发生过变化, 就将索引向前移动
+            if (length != tableNames.size()) {
+                length = tableNames.size();
+                i --;
+            }
             tables.put(table.getName(), table);
         }
+
+
 
     }
 

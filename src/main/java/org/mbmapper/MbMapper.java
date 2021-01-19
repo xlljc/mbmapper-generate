@@ -2,10 +2,13 @@ package org.mbmapper;
 
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.dao.ConnectDevice;
+import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
 import org.mbmapper.utils.DBUtil;
 
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.Set;
 
 
 public class MbMapper {
@@ -60,7 +63,12 @@ public class MbMapper {
 
         TargetTables targetTables = new TargetTables(config);
         targetTables.load();
-        System.out.println(targetTables.getTables());
+        Map<String, Table> tables = targetTables.getTables();
+        Set<String> keySet = tables.keySet();
+        for (String s : keySet) {
+            Table table = tables.get(s);
+            System.out.printf("generateVo(): => tableName: %s, table: %s%n", s, table);
+        }
 
     }
 
