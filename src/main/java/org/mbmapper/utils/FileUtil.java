@@ -1,6 +1,7 @@
 package org.mbmapper.utils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class FileUtil {
 
@@ -26,8 +27,30 @@ public class FileUtil {
      * @param content 文件内容
      * @param file 写出的指定文件
      */
-    public static void writeFile(String content,File file) {
+    public static void writeFile(String content,File file) throws IOException {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+            fileOutputStream.write(content.getBytes());
+            fileOutputStream.flush();
+        }
+    }
 
+    /**
+     * 文件的拷贝
+     * @param readFile 需要拷贝的文件
+     * @param newFile 保存的文件
+     */
+    public static void copyFile(File readFile, File newFile) throws IOException {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+             Writer writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+             BufferedWriter bufferedWriter = new BufferedWriter(writer);
+             BufferedReader bufferedReader = new BufferedReader(new FileReader(readFile))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+            }
+        }
     }
 
 }

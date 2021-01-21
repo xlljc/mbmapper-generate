@@ -1,6 +1,7 @@
 package org.mbmapper.produce;
 
 import org.mbmapper.config.MbMapperConfig;
+import org.mbmapper.utils.FileUtil;
 import org.mbmapper.utils.RegexUtil;
 
 import java.io.File;
@@ -130,10 +131,7 @@ public class MbLog {
         File file = new File(logPath);
         try {
             //写出操作
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(logStr.toString().getBytes());
-            fileOutputStream.close();
-            fileOutputStream.flush();
+            FileUtil.writeFile(logStr.toString(), file);
         } catch (IOException e) {
             e.printStackTrace();
         }

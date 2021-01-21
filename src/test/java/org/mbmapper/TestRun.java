@@ -27,7 +27,7 @@ public class TestRun {
 
     @Test
     void test2() throws IOException {
-        MbMapperConfig config = new MbMapperConfig();
+        //MbMapperConfig config = new MbMapperConfig();
         JavaFileLoader javaFileLoader = new JavaFileLoader("H:\\idea\\mapTest\\vo\\MbMapper.java");
         javaFileLoader.load();
         System.out.println(javaFileLoader.getJavaContent());
