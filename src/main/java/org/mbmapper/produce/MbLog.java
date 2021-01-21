@@ -4,11 +4,8 @@ import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.utils.RegexUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 日志输出类
@@ -35,7 +32,7 @@ public class MbLog {
      * @param msg 消息内容
      */
     public static void print(String msg) {
-        logStr.append(msg).append("\n");
+        if (logStr != null) logStr.append(msg).append("\n");
         System.out.println(msg);
     }
 
@@ -47,7 +44,7 @@ public class MbLog {
      * @param underline 是否带下划线
      */
     public static void print(String msg, Bgc bgc,Color color,boolean underline) {
-        logStr.append(msg).append("\n");
+        if (logStr != null) logStr.append(msg).append("\n");
         String bgcVal = bgc.getValue();
         String colorVal = color.getValue();
         if (bgcVal != null && colorVal != null) {
@@ -66,7 +63,7 @@ public class MbLog {
      * @param msg 消息内容
      */
     public static void log(String msg) {
-        if (!config.isPrintLog()) return;
+        if (config != null && !config.isPrintLog()) return;
         print(msg);
     }
 
@@ -78,7 +75,7 @@ public class MbLog {
      * @param underline 是否带下划线
      */
     public static void log(String msg, Bgc bgc,Color color,boolean underline) {
-        if (!config.isPrintLog()) return;
+        if (config != null && !config.isPrintLog()) return;
         print(msg, bgc, color, underline);
     }
 

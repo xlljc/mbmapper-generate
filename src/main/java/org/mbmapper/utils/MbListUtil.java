@@ -2,7 +2,7 @@ package org.mbmapper.utils;
 
 import java.util.List;
 
-public class MbListUtils {
+public class MbListUtil {
 
     /**
      * 将集合拼接为字符串

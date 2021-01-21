@@ -5,7 +5,7 @@ import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.config.MbMapperConfigException;
 import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.TableStructDao;
-import org.mbmapper.utils.MbListUtils;
+import org.mbmapper.utils.MbListUtil;
 import org.mbmapper.utils.RegexUtil;
 
 import java.sql.SQLException;
@@ -41,13 +41,13 @@ public class TargetTables {
         String tablesStr = config.getTables();
 
         if (RegexUtil.matches("^\\s*\\*\\s*$", tablesStr)) {    //是否为全部的表
-            MbLog.logInfo("TargetTables.TargetTables(): => All of the table");
+            MbLog.logInfo("TargetTables.TargetTables(): => All of the table.");
             //获取所有的表
             tableNames = structDao.getAllTableNames();
 
         } else if (RegexUtil.matches("^\\s*!\\s*\\[[\\s\\S]*]$", tablesStr)) {  //不包含的表
             tablesStr = tablesStr.replaceAll("(^\\s*!)|(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
-            MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table not included [%s]", tablesStr));
+            MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table not included [%s].", tablesStr));
             //获取所有的表
             tableNames = structDao.getAllTableNames();
             //分割表
@@ -57,7 +57,7 @@ public class TargetTables {
 
         } else if (RegexUtil.matches("^\\s*\\[[\\s\\S]*]$", tablesStr)) {   //指定的表
             tablesStr = tablesStr.replaceAll("(\\[\\s*,*)|(,*\\s*])|(\\s)", "");
-            MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table included [%s]", tablesStr));
+            MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table included [%s].", tablesStr));
 
             //分割表
             tableNames = new ArrayList<>(Arrays.asList(tablesStr.split(",")));
@@ -66,7 +66,7 @@ public class TargetTables {
                     .printStackTrace();
             tableNames = new ArrayList<>();
         }
-        MbLog.logInfo(String.format("TargetTables.TargetTables(): => %s", tableNames));
+        MbLog.logInfo(String.format("TargetTables.TargetTables(): => %s.", tableNames));
     }
 
 
@@ -128,7 +128,7 @@ public class TargetTables {
 
                 //拼接字符串
                 if (temp.size() > 0)
-                    str += MbListUtils.join(temp, ",", "(", ")");
+                    str += MbListUtil.join(temp, ",", "(", ")");
                 logStr.append(str).append("  ");
             }
             MbLog.log(logStr.toString());
