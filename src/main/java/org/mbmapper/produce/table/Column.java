@@ -17,6 +17,11 @@ public class Column {
     private String name;
 
     /**
+     * 对应的字段名
+     */
+    private String fieldName;
+
+    /**
      * 值类型
      */
     private int type;

@@ -20,6 +20,11 @@ public class Table {
     private String name;
 
     /**
+     * 对应的类名
+     */
+    private String className;
+
+    /**
      * 表注释
      */
     private String comment;

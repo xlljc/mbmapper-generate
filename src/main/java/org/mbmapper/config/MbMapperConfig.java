@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.mbmapper.utils.PropertyLoader;
 
-import java.io.IOException;
-
 @Data
 @AllArgsConstructor
 public class MbMapperConfig {
@@ -29,8 +27,8 @@ public class MbMapperConfig {
     /** 实体层是否使用Lombok, 默认false */
     private boolean useLombok = false;
 
-    /** 代码输出输出路径, 绝对路径 */
-    private String srcDir;
+    /** java代码输出输出路径, 绝对路径 */
+    private String javaDir;
     /** 实体类包名, 默认'vo' */
     private String voPackage = "vo";
     /** dao层接口包名, 默认'dao' */
@@ -51,8 +49,9 @@ public class MbMapperConfig {
      * 创建一个配置类
      * 使用默认的配置路径加载配置路径, 配置文件在 classpath:mbmapper.properties
      */
-    public MbMapperConfig() throws IOException {
+    public MbMapperConfig() throws MbMapperConfigException {
         new PropertyLoader().load(this, "mbmapper.properties");
+        verify();
     }
 
     /**
@@ -60,8 +59,20 @@ public class MbMapperConfig {
      * 带指定配置文件的初始化, 不想使用默认配置路径, 可以使用该构造函数
      * @param propertiesFile 配置文件地址路径, 使用相对路径
      */
-    public MbMapperConfig(String propertiesFile) throws IOException {
+    public MbMapperConfig(String propertiesFile) throws MbMapperConfigException {
         new PropertyLoader().load(this, propertiesFile);
+        verify();
+    }
+
+
+    /**
+     * 验证配置属性是否符合规范
+     */
+    private void verify() throws MbMapperConfigException {
+        if (url == null) throw new MbMapperConfigException("Configuration item 'url' cannot be empty");
+        if (user == null) throw new MbMapperConfigException("Configuration item 'user' cannot be empty");
+        if (password == null) throw new MbMapperConfigException("Configuration item 'user' cannot be empty");
+        if (driver == null) throw new MbMapperConfigException("Configuration item 'driver' cannot be empty");
     }
 
 }

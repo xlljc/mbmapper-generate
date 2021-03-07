@@ -28,33 +28,22 @@ public class DBUtil {
 	/**
 	 * 获取连接对象
 	 */
-	public static Connection getConn() {
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url, user, pwd);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return conn;
-
+	public static Connection getConn() throws SQLException {
+		return DriverManager.getConnection(url, user, pwd);
 	}
 
 	/**
 	 * 关闭连接
 	 */
-	public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			if (conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) throws SQLException {
+		if (rs != null) {
+			rs.close();
+		}
+		if (pstmt != null) {
+			pstmt.close();
+		}
+		if (conn != null) {
+			conn.close();
 		}
 	}
 }

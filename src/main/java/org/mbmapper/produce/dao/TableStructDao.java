@@ -5,6 +5,8 @@ import org.mbmapper.produce.table.Column;
 import org.mbmapper.produce.table.ForeignKey;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.utils.DBUtil;
+import org.mbmapper.utils.NameUtil;
+import org.mbmapper.utils.RegexUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -50,13 +52,14 @@ public class TableStructDao {
     /**
      * 根据表名获取表结构, 获取表的所有列名以及对应的类型
      *
-     * @param tableName 表名
+     * @param tableName  表名
      * @param tableNames 所有的表名
      */
-    public Table getTableStruct(String tableName,final List<String> tableNames) throws SQLException {
+    public Table getTableStruct(String tableName, final List<String> tableNames) throws SQLException {
         //table对象
         Table table = new Table();
         table.setName(tableName);
+        table.setClassName(NameUtil.firstToUpperCase(NameUtil.toHumpName(tableName)));
 
         //创建表的列结构, map键值对
         Map<String, Column> columnMap = new HashMap<>();
@@ -175,6 +178,7 @@ public class TableStructDao {
         boolean notNull = !"YES".equals(columnSet.getString("IS_NULLABLE"));
 
         column.setName(columnName);
+        column.setFieldName(NameUtil.firstToLowerCase(NameUtil.toHumpName(columnName)));
         column.setType(columnType);
         column.setTypeName(columnTypeName);
         column.setAutoIncrement(isAutoincrement);
@@ -186,10 +190,11 @@ public class TableStructDao {
 
     /**
      * 获取外键元数据
+     *
      * @param importedKeys 包含外键的 ResultSet 集合
-     * @param tableName 当前表名
+     * @param tableName    当前表名
      */
-    private ForeignKey _foreignKeyMeta(ResultSet importedKeys,String tableName) throws SQLException {
+    private ForeignKey _foreignKeyMeta(ResultSet importedKeys, String tableName) throws SQLException {
         //外键列名
         String fkColumnName = importedKeys.getString("FKCOLUMN_NAME");
         //主键表名
@@ -198,5 +203,4 @@ public class TableStructDao {
         String pkColumnName = importedKeys.getString("PKCOLUMN_NAME");
         return new ForeignKey(tableName, pkTableName, fkColumnName, pkColumnName);
     }
-
 }

@@ -22,7 +22,7 @@ public class ConnectDevice {
     /**
      * 打开连接
      */
-    public static void open() {
+    public static void open() throws SQLException {
         if (!flag) {
             connection = DBUtil.getConn();
             flag = true;
@@ -33,7 +33,7 @@ public class ConnectDevice {
     /**
      * 关闭连接
      */
-    public static void close() {
+    public static void close() throws SQLException {
         if (flag) {
             DBUtil.close(connection, null, null);
             flag = false;
