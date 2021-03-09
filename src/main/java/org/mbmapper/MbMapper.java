@@ -69,6 +69,7 @@ public class MbMapper {
             targetTables.load();
             Map<String, Table> tables = targetTables.getTables();
 
+            //************** 创建java code ****************
 
             tables.keySet().forEach(key -> {
                 Table table = tables.get(key);
@@ -79,7 +80,7 @@ public class MbMapper {
                 cls.setPackageName(config.getVoPackage());
                 //设置类名
                 cls.setClassName(table.getClassName());
-                //设置类注解
+                //设置类注释
                 cls.setComment(table.getComment());
 
 
@@ -88,6 +89,7 @@ public class MbMapper {
                 MbLog.logInfo(cls.toJavaCode());
             });
 
+            //***********************************************
 
         } catch (SQLException e) {
             MbLog.logError("MbMapper.generateVo() has exception: => " + e.getMessage());

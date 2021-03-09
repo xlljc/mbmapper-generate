@@ -6,7 +6,6 @@ import org.mbmapper.produce.table.ForeignKey;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.utils.DBUtil;
 import org.mbmapper.utils.NameUtil;
-import org.mbmapper.utils.RegexUtil;
 
 import java.sql.*;
 import java.util.ArrayList;

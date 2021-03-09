@@ -17,10 +17,14 @@ public class Class {
     private String comment;
     /** 注解 */
     private Map<String, Annotation> annotations;
+    /** 访问修饰符 */
+    private AccessModify accessModify = AccessModify.PUBLIC;
     /** 类型 */
     private DefineType type = DefineType.CLASS;
     /** 类名 */
     private String className;
+    /** 数据库表名 */
+    private String tableName;
     /** 基类 */
     private KeyValue<String, String> base;
     /** 字段 */
@@ -52,7 +56,7 @@ public class Class {
         }
         //类
         if (className != null) {
-            code.append(String.format("public %s %s {\n\t\t\n}",type.getValue().toLowerCase(),className));
+            code.append(String.format("public %s %s {\n\t\t\n}",type.getValue(),className));
         }
 
         return code.toString();
