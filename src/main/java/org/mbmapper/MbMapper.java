@@ -3,12 +3,15 @@ package org.mbmapper;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.ConnectDevice;
+import org.mbmapper.produce.describe.Class;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
 import org.mbmapper.utils.DBUtil;
 
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 
 public class MbMapper {
@@ -66,6 +69,24 @@ public class MbMapper {
             targetTables.load();
             Map<String, Table> tables = targetTables.getTables();
 
+
+            tables.keySet().forEach(key -> {
+                Table table = tables.get(key);
+
+                Class cls = new Class();
+
+                //设置包名
+                cls.setPackageName(config.getVoPackage());
+                //设置类名
+                cls.setClassName(table.getClassName());
+                //设置类注解
+                cls.setComment(table.getComment());
+
+
+                MbLog.logSuccess("cls: => " + cls);
+                MbLog.line();
+                MbLog.logInfo(cls.toJavaCode());
+            });
 
 
         } catch (SQLException e) {
