@@ -4,13 +4,17 @@ import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.ConnectDevice;
 import org.mbmapper.produce.describe.Class;
+import org.mbmapper.produce.describe.Constructor;
+import org.mbmapper.produce.describe.Field;
+import org.mbmapper.produce.describe.KeyValue;
+import org.mbmapper.produce.table.Column;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
 import org.mbmapper.utils.DBUtil;
+import org.mbmapper.utils.NameUtil;
 
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 
@@ -82,6 +86,33 @@ public class MbMapper {
                 cls.setClassName(table.getClassName());
                 //设置类注释
                 cls.setComment(table.getComment());
+
+                //构造函数(无参构造)
+
+                Map<String, Field> fields = new HashMap<>();
+                cls.setFields(fields);
+                //遍历字段
+                table.getColumnMap().keySet().forEach(columnName -> {
+                    Column column = table.getColumnMap().get(columnName);
+                    Field field = new Field();
+                    //字段名
+                    field.setName(column.getFieldName());
+                    //列名
+                    field.setColumnName(column.getName());
+                    //注释
+                    field.setComment(column.getComment());
+                    //列类型
+                    KeyValue<String, String> typeKV = NameUtil.jdbcType(column.getType());
+                    if (typeKV == null) {
+                        //throw new MbMapperException(String.format("No Java type matching type '%s' was found, please check your configuration file", column.getTypeName()));
+                    }
+                    field.setType(typeKV.getKey());
+                    if (typeKV.getValue() != null) {
+                        cls.addImport(typeKV.getValue());
+                    }
+
+                    fields.put(column.getFieldName(),field);
+                });
 
 
                 MbLog.logSuccess("cls: => " + cls);
