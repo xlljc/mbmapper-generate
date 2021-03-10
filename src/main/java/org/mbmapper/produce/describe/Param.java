@@ -1,5 +1,6 @@
 package org.mbmapper.produce.describe;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public class Param {
     /**
      * 注解
      */
-    private Map<String,Annotation> annotationMap;
+    private Map<String,Annotation> annotationMap = new HashMap<>();
 
     public Param(){
     }

@@ -4,7 +4,7 @@ public enum AccessModify {
 
     PUBLIC("public "),
     DEFAULT(""),
-    PROTECTED("protected"),
+    PROTECTED("protected "),
     PRIVATE("private ");
 
     private final String value;

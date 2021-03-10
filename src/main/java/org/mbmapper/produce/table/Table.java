@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class Table {
     /**
      * 外键列表
      */
-    private Map<String, ForeignKey> foreignKeyMap;
+    private Map<String, ForeignKey> foreignKeyMap = new HashMap<>();
 
 
 }

@@ -85,14 +85,11 @@ public class MbMapper {
                 //设置类注释
                 cls.setComment(table.getComment());
 
-                List<Constructor> constructors = new ArrayList<>();
-                cls.setConstructors(constructors);
-                //构造函数(无参构造)
-                Constructor constructor = new Constructor();
-                constructors.add(constructor);
+                //序列化接口
+                List<Type> implementList = cls.getImplementList();
+                implementList.add(new Type("Serializable", "java.io.Serializable"));
 
-                List<Field> fields = new ArrayList<>();
-                cls.setFields(fields);
+                List<Field> fields = cls.getFields();
                 //遍历字段
                 for (Column column : table.getColumns()) {
                     Field field = new Field();

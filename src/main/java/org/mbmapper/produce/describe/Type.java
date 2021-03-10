@@ -5,7 +5,14 @@ package org.mbmapper.produce.describe;
  */
 public class Type {
 
+    /**
+     * 类型名称
+     */
     private String name;
+
+    /**
+     * 需要导入的包
+     */
     private String importPackage;
 
     public Type() {

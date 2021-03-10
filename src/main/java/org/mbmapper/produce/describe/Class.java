@@ -4,12 +4,14 @@ import lombok.Data;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.table.Table;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Data
-public class Class {
+public class Class implements Serializable {
 
     /**
      * 包名
@@ -30,7 +32,7 @@ public class Class {
     /**
      * 注解
      */
-    private Map<String, Annotation> annotations;
+    private Map<String, Annotation> annotations = new HashMap<>();
     /**
      * 访问修饰符
      */
@@ -49,17 +51,21 @@ public class Class {
      */
     private Type base;
     /**
+     * 实现的接口
+     */
+    private List<Type> implementList = new ArrayList<>();
+    /**
      * 字段
      */
-    private List<Field> fields;
+    private List<Field> fields = new ArrayList<>();
     /**
      * 构造函数
      */
-    private List<Constructor> constructors;
+    private List<Constructor> constructors = new ArrayList<>();
     /**
      * 方法函数
      */
-    private List<Method> methods;
+    private List<Method> methods = new ArrayList<>();
 
     /**
      * 添加导入的包或类
@@ -76,20 +82,17 @@ public class Class {
      * 将该类转成java代码
      */
     public String toJavaCode(MbMapperConfig config) {
+
+        //Lombok相关
         if (config.isUseLombok()) {
-            imports.add("lombok.Data");
+            Annotation annotation = new Annotation();
+            annotation.setType(new Type("Data", "lombok.Data"));
+            annotations.put(annotation.getType().getName(),annotation);
         }
 
+        StringBuilder codeHead = new StringBuilder();
         StringBuilder code = new StringBuilder();
-        //包名
-        if (packageName != null) {
-            code.append("package ").append(packageName).append(";\n");
-        }
 
-        //导入的包
-        imports.forEach(item -> {
-            code.append(String.format("import %s;\n", item));
-        });
         //类注释
         if (config.isUseComment()) {
             if (comment != null) {
@@ -99,13 +102,73 @@ public class Class {
             }
         }
 
-        //Lombok相关
-        if (config.isUseLombok()) {
-            code.append("@Data");
-        }
-        //类
-        code.append(String.format("public %s %s {\n\n", type.getValue(), className));
+        //类注解
+        annotations.forEach((key, annotation) -> {
+            System.out.println("annotation: " + annotation);
+            imports.add(annotation.getType().getImportPackage());
+            List<KeyValue<String, String>> params = annotation.getParams();
+            if (params.size() == 0) {
+                code.append(String.format("@%s\n", annotation.getType().getName()));
+            } else {
+                StringBuilder value = new StringBuilder();
+                for (int i = 0; i < params.size(); i++) {
+                    KeyValue<String, String> keyValue = params.get(i);
+                    if (i > 0) {
+                        value.append(", ");
+                    }
+                    value.append(String.format("%s = %s", keyValue.getKey(), keyValue.getValue()));
+                }
+                code.append(String.format("@%s(%s)\n", annotation.getType().getName(), value.toString()));
+            }
+        });
 
+        //类
+        code.append(String.format("%s%s %s ",accessModify.getValue(), type.getValue(), className));
+
+        //基类
+        if (base != null) {
+            code.append("extends ").append(base.getName()).append(" ");
+            if (base.getImportPackage() != null) {
+                imports.add(base.getImportPackage());
+            }
+        }
+        //实现接口
+        for (int i = 0; i < implementList.size(); i++) {
+            if (i == 0) {
+                code.append("implements ");
+            }
+            Type temp = implementList.get(i);
+            code.append(temp.getName());
+            if (i < implementList.size() - 1) {
+                code.append(", ");
+            } else {
+                code.append(" ");
+            }
+            if (temp.getImportPackage() != null) {
+                imports.add(temp.getImportPackage());
+            }
+        }
+
+        code.append("{\n\n");
+        code.append(getBodyCode(config));
+        code.append("}");
+
+        //包名
+        if (packageName != null) {
+            codeHead.append("package ").append(packageName).append(";\n");
+        }
+        //导入的包
+        imports.forEach(item -> {
+            codeHead.append(String.format("import %s;\n", item));
+        });
+        return codeHead.append(code).toString();
+    }
+
+    /**
+     * 获取class主体代码
+     */
+    private String getBodyCode(MbMapperConfig config) {
+        StringBuilder code = new StringBuilder();
         //字段
         for (Field field : fields) {
             if (field.getComment() != null) {
@@ -133,7 +196,7 @@ public class Class {
             //toString
             code.append(getToStringCode());
         }
-        return code.append("}").toString();
+        return code.toString();
     }
 
     /**

@@ -127,8 +127,7 @@ public class TableStructDao {
         });
 
         //获取外键列表
-        Map<String, ForeignKey> foreignKeyMap = new HashMap<>();
-        table.setForeignKeyMap(foreignKeyMap);
+        Map<String, ForeignKey> foreignKeyMap = table.getForeignKeyMap();
 
         ResultSet importedKeys = metaData.getImportedKeys(connection.getCatalog(), null, tableName);
         if (config.isUseRope()) {   //开启了捆绑关联

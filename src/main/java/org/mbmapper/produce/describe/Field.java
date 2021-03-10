@@ -5,6 +5,7 @@ import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.table.Column;
 import org.mbmapper.utils.NameUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -37,7 +38,7 @@ public class Field {
     /**
      * 注解
      */
-    private Map<String, Annotation> annotations;
+    private Map<String, Annotation> annotations = new HashMap<>();
 
     /**
      * 获取get代码

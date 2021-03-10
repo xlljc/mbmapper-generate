@@ -2,6 +2,7 @@ package org.mbmapper.produce.describe;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class Constructor {
     /**
      * 参数
      */
-    private List<Param> params;
+    private List<Param> params = new ArrayList<>();
 
     /**
      * 方法体
