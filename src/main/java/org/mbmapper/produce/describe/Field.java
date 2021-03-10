@@ -1,6 +1,7 @@
 package org.mbmapper.produce.describe;
 
 import lombok.Data;
+import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.table.Column;
 import org.mbmapper.utils.NameUtil;
 
@@ -24,7 +25,7 @@ public class Field {
     /**
      * 类型
      */
-    private String type;
+    private Type type;
     /**
      * 默认值
      */
@@ -41,24 +42,39 @@ public class Field {
     /**
      * 获取get代码
      */
-    public String toGetCode() {
-        if ("boolean".equals(type) || "Boolean".equals(type)) {
+    public String toGetCode(MbMapperConfig config) {
+        if ("boolean".equals(type.getName()) || "Boolean".equals(type.getName())) {
+            if (config.isUseComment() && comment != null) {
+                return String.format(
+                        "\t/** 数据对应库字段:%s，%s */\n\t%s%s is%s() {\n\t\treturn %s;\n\t}",
+                        column.getName(),comment,accessModify.getValue(), type.getName(), NameUtil.firstToUpperCase(name), name);
+            }
             return String.format(
                     "\t%s%s is%s() {\n\t\treturn %s;\n\t}",
-                    accessModify.getValue(), type, NameUtil.firstToUpperCase(name), name);
+                    accessModify.getValue(), type.getName(), NameUtil.firstToUpperCase(name), name);
+        }
+        if (comment != null) {
+            return String.format(
+                    "\t/** 数据对应库字段:%s，%s */\n\t%s%s get%s() {\n\t\treturn %s;\n\t}",
+                    column.getName(),comment,accessModify.getValue(), type.getName(), NameUtil.firstToUpperCase(name), name);
         }
         return String.format(
                 "\t%s%s get%s() {\n\t\treturn %s;\n\t}",
-                accessModify.getValue(), type, NameUtil.firstToUpperCase(name), name);
+                accessModify.getValue(), type.getName(), NameUtil.firstToUpperCase(name), name);
     }
 
     /**
      * 获取set代码
      */
-    public String toSetCode() {
+    public String toSetCode(MbMapperConfig config) {
+        if (config.isUseComment() && comment != null) {
+            return String.format(
+                    "\t/** 数据对应库字段:%s，%s */\n\t%svoid set%s(%s %s) {\n\t\tthis.%s = %s;\n\t}",
+                    column.getName(),comment,accessModify.getValue(), NameUtil.firstToUpperCase(name), type.getName(), name, name, name);
+        }
         return String.format(
                 "\t%svoid set%s(%s %s) {\n\t\tthis.%s = %s;\n\t}",
-                accessModify.getValue(), NameUtil.firstToUpperCase(name), type, name, name, name);
+                accessModify.getValue(), NameUtil.firstToUpperCase(name), type.getName(), name, name, name);
     }
 
 }

@@ -3,10 +3,8 @@ package org.mbmapper;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.ConnectDevice;
+import org.mbmapper.produce.describe.*;
 import org.mbmapper.produce.describe.Class;
-import org.mbmapper.produce.describe.Constructor;
-import org.mbmapper.produce.describe.Field;
-import org.mbmapper.produce.describe.KeyValue;
 import org.mbmapper.produce.table.Column;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
@@ -15,7 +13,6 @@ import org.mbmapper.utils.NameUtil;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Consumer;
 
 
 public class MbMapper {
@@ -79,6 +76,8 @@ public class MbMapper {
 
             for (Table table : tables) {
                 Class cls = new Class();
+                //设置对应的表
+                cls.setTable(table);
                 //设置包名
                 cls.setPackageName(config.getVoPackage());
                 //设置类名
@@ -86,7 +85,11 @@ public class MbMapper {
                 //设置类注释
                 cls.setComment(table.getComment());
 
+                List<Constructor> constructors = new ArrayList<>();
+                cls.setConstructors(constructors);
                 //构造函数(无参构造)
+                Constructor constructor = new Constructor();
+                constructors.add(constructor);
 
                 List<Field> fields = new ArrayList<>();
                 cls.setFields(fields);
@@ -100,21 +103,21 @@ public class MbMapper {
                     //注释
                     field.setComment(column.getComment());
                     //列类型
-                    KeyValue<String, String> typeKV = NameUtil.jdbcType(column.getType());
-                    if (typeKV == null) {
+                    Type type = NameUtil.jdbcType(column.getType());
+                    if (type == null) {
                         throw new MbMapperException(String.format("No Java type matching type '%s' was found, please check your configuration file", column.getTypeName()));
                     }
-                    field.setType(typeKV.getKey());
-                    if (typeKV.getValue() != null) {
-                        cls.addImport(typeKV.getValue());
+                    field.setType(type);
+                    //引入
+                    if (type.getImportPackage() != null) {
+                        cls.addImport(type.getImportPackage());
                     }
 
                     fields.add(field);
                 }
 
-                MbLog.logSuccess("cls: => " + cls);
                 MbLog.line();
-                MbLog.logInfo(cls.toJavaCode());
+                MbLog.logInfo(cls.toJavaCode(config));
             }
 
             //***********************************************

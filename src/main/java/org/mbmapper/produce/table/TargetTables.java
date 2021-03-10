@@ -82,16 +82,15 @@ public class TargetTables {
             String name = tableNames.get(i);
             //获取表结构, 如果 tableNames 被修改, 那么索引会变化
             Table table = structDao.getTableStruct(name, tableNames);
-            //如果长度发生过变化, 就将索引向前移动
+            //如果长度发生过变化, //**就将索引向前移动
             if (length != tableNames.size()) {
                 length = tableNames.size();
-                i --;
+                //**i--;
             }
             tables.add(table);
         }
         //打印日志
         _loadLog();
-
     }
 
     /**

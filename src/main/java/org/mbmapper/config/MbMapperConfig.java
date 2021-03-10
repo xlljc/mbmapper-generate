@@ -41,6 +41,8 @@ public class MbMapperConfig {
 
     /** 是否启用捆绑关联表, 默认 false, 当开启后, 如果表 a 外键关联着表 b, 而你在 tables 中没有配置生成表 b, 那么系统会帮助你生成表 b */
     private boolean useRope = false;
+    /** 是否生成代码注释, 默认true */
+    private boolean useComment = true;
 
     /** 要写出的表, 默认写出所有的表 */
     private String tables = "*";

@@ -36,4 +36,14 @@ public class MbListUtil {
         return null;
     }
 
+    /**
+     * 在list中查找指定的项的索引
+     */
+    public static <T> int findIndex(List<T> list,MbListFind<T> callback) {
+        for (int i = 0; i < list.size(); i++) {
+            if (callback.find(list.get(i))) return i;
+        }
+        return -1;
+    }
+
 }
