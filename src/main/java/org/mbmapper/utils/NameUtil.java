@@ -1,7 +1,5 @@
 package org.mbmapper.utils;
 
-import org.mbmapper.MbMapperException;
-import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.describe.KeyValue;
 
 import java.sql.JDBCType;

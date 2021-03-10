@@ -1,6 +1,7 @@
 package org.mbmapper.produce.describe;
 
 import lombok.Data;
+import org.mbmapper.produce.table.Column;
 import org.mbmapper.utils.NameUtil;
 
 import java.util.Map;
@@ -13,9 +14,9 @@ public class Field {
      */
     private String name;
     /**
-     * 数据库列名
+     * 数据库对应列
      */
-    private String columnName;
+    private Column column;
     /**
      * 访问修饰符
      */

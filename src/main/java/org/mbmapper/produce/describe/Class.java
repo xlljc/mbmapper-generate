@@ -43,20 +43,21 @@ public class Class {
     private String tableName;
     /**
      * 基类
+     * key: 类名, value: 导入包
      */
     private KeyValue<String, String> base;
     /**
      * 字段
      */
-    private Map<String, Field> fields;
+    private List<Field> fields;
     /**
      * 构造函数
      */
-    private Map<String, Constructor> constructors;
+    private List<Constructor> constructors;
     /**
      * 方法函数
      */
-    private Map<String, Method> methods;
+    private List<Method> methods;
 
     /**
      * 添加导入的包或类
@@ -87,16 +88,14 @@ public class Class {
         code.append(String.format("public %s %s {\n\t\t\n", type.getValue(), className));
 
         //字段
-        fields.keySet().forEach(name -> {
-            Field field = fields.get(name);
+        for (Field field : fields) {
             code.append(String.format("\t%s%s %s;\n", field.getAccessModify().getValue(), field.getType(), field.getName()));
-        });
+        }
         //get,set
-        fields.keySet().forEach(name -> {
-            Field field = fields.get(name);
+        for (Field field : fields) {
             code.append(field.toGetCode()).append("\n");
             code.append(field.toSetCode()).append("\n");
-        });
+        }
 
         return code.append("}").toString();
     }

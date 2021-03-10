@@ -24,7 +24,7 @@ public class TargetTables {
     private List<String> tableNames;
 
     /** 所有需要写出的表对象 */
-    private Map<String,Table> tables;
+    private List<Table> tables;
 
 
     private final TableStructDao structDao;
@@ -74,7 +74,7 @@ public class TargetTables {
      * 加载类的表的构造, 之后就可以获取 tables 了
      */
     public void load() throws SQLException {
-        tables = new HashMap<>();
+        tables = new ArrayList<>();
         //tableNames.
         //先来基础的, 直接遍历
         int length = tableNames.size();
@@ -87,7 +87,7 @@ public class TargetTables {
                 length = tableNames.size();
                 i --;
             }
-            tables.put(table.getName(), table);
+            tables.add(table);
         }
         //打印日志
         _loadLog();
@@ -102,18 +102,13 @@ public class TargetTables {
         MbLog.line();
         MbLog.logSuccess("TargetTables.load(): => The table was loaded successfully, printed as follows:");
         //遍历表
-        Set<String> keySet = tables.keySet();
-        for (String s : keySet) {
-            Table table = tables.get(s);
+        for (Table table : tables) {
             //日志字符串
             StringBuilder logStr = new StringBuilder(
-                    String.format("              table: => tableName: %s%n                        column: ", s));
+                    String.format("              table: => tableName: %s%n                        column: ", table.getName()));
 
-            Map<String, Column> columnMap = table.getColumnMap();
             //遍历列
-            Set<String> set = columnMap.keySet();
-            for (String s1 : set) {
-                Column column = columnMap.get(s1);
+            for (Column column : table.getColumns()) {
                 String str = column.getName();
                 List<String> temp = new ArrayList<>();
                 //如果该列存在外键

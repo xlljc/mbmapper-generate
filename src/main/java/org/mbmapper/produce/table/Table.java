@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,7 +43,7 @@ public class Table {
     /**
      * 表列数据
      */
-    private Map<String, Column> columnMap;
+    private List<Column> columns;
 
     /**
      * 外键列表

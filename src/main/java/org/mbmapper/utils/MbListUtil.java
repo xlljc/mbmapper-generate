@@ -26,4 +26,14 @@ public class MbListUtil {
         return append != null ? str + append : str.toString();
     }
 
+    /**
+     * 在list中查找指定的项
+     */
+    public static <T> T find(List<T> list,MbListFind<T> callback) {
+        for (T item : list) {
+            if (callback.find(item)) return item;
+        }
+        return null;
+    }
+
 }

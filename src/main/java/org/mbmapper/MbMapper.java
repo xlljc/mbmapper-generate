@@ -20,13 +20,15 @@ import java.util.function.Consumer;
 
 public class MbMapper {
 
-    /** 传入的配置文件 */
+    /**
+     * 传入的配置文件
+     */
     private final MbMapperConfig config;
 
     public MbMapper(MbMapperConfig config) throws ClassNotFoundException {
         this.config = config;
         //初始化数据库配置
-        DBUtil.init(config.getUrl(),config.getUser(),config.getPassword(),config.getDriver());
+        DBUtil.init(config.getUrl(), config.getUser(), config.getPassword(), config.getDriver());
     }
 
     /**
@@ -54,9 +56,9 @@ public class MbMapper {
      */
     public void generate() {
         // dao层接口存放路径
-        String daoDir = config.getJavaDir() + "/" + config.getDaoPackage().replaceAll("\\.","/");
+        String daoDir = config.getJavaDir() + "/" + config.getDaoPackage().replaceAll("\\.", "/");
         // vo存放路径
-        String voDir = config.getJavaDir() + "/" + config.getVoPackage().replaceAll("\\.","/");
+        String voDir = config.getJavaDir() + "/" + config.getVoPackage().replaceAll("\\.", "/");
 
         System.out.println(daoDir);
         System.out.println(voDir);
@@ -71,15 +73,12 @@ public class MbMapper {
         try {
             TargetTables targetTables = new TargetTables(config);
             targetTables.load();
-            Map<String, Table> tables = targetTables.getTables();
+            List<Table> tables = targetTables.getTables();
 
             //************** 创建java code ****************
 
-            tables.keySet().forEach(key -> {
-                Table table = tables.get(key);
-
+            for (Table table : tables) {
                 Class cls = new Class();
-
                 //设置包名
                 cls.setPackageName(config.getVoPackage());
                 //设置类名
@@ -89,36 +88,34 @@ public class MbMapper {
 
                 //构造函数(无参构造)
 
-                Map<String, Field> fields = new HashMap<>();
+                List<Field> fields = new ArrayList<>();
                 cls.setFields(fields);
                 //遍历字段
-                table.getColumnMap().keySet().forEach(columnName -> {
-                    Column column = table.getColumnMap().get(columnName);
+                for (Column column : table.getColumns()) {
                     Field field = new Field();
+                    //设置对应列
+                    field.setColumn(column);
                     //字段名
                     field.setName(column.getFieldName());
-                    //列名
-                    field.setColumnName(column.getName());
                     //注释
                     field.setComment(column.getComment());
                     //列类型
                     KeyValue<String, String> typeKV = NameUtil.jdbcType(column.getType());
                     if (typeKV == null) {
-                        //throw new MbMapperException(String.format("No Java type matching type '%s' was found, please check your configuration file", column.getTypeName()));
+                        throw new MbMapperException(String.format("No Java type matching type '%s' was found, please check your configuration file", column.getTypeName()));
                     }
                     field.setType(typeKV.getKey());
                     if (typeKV.getValue() != null) {
                         cls.addImport(typeKV.getValue());
                     }
 
-                    fields.put(column.getFieldName(),field);
-                });
-
+                    fields.add(field);
+                }
 
                 MbLog.logSuccess("cls: => " + cls);
                 MbLog.line();
                 MbLog.logInfo(cls.toJavaCode());
-            });
+            }
 
             //***********************************************
 
@@ -130,7 +127,6 @@ public class MbMapper {
             MbLog.logError("MbMapper.generateVo() has exception: => " + e.getMessage());
         }
     }
-
 
 
 }

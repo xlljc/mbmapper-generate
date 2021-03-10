@@ -5,6 +5,7 @@ import org.mbmapper.produce.table.Column;
 import org.mbmapper.produce.table.ForeignKey;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.utils.DBUtil;
+import org.mbmapper.utils.MbListUtil;
 import org.mbmapper.utils.NameUtil;
 
 import java.sql.*;
@@ -61,8 +62,8 @@ public class TableStructDao {
         table.setClassName(NameUtil.firstToUpperCase(NameUtil.toHumpName(tableName)));
 
         //创建表的列结构, map键值对
-        Map<String, Column> columnMap = new HashMap<>();
-        table.setColumnMap(columnMap);
+        List<Column> columnList = new ArrayList<>();
+        table.setColumns(columnList);
 
         //获取到
         Connection connection = ConnectDevice.getConnection();
@@ -75,7 +76,7 @@ public class TableStructDao {
             //获取数据
             Column column = _columnMeta(columns);
             //根据列名称加入到 columnMap 集合中
-            columnMap.put(column.getName(), column);
+            columnList.add(column);
 
             //判断自增长列
             if (table.getAiColumn() == null && column.isAutoIncrement()) {
@@ -91,7 +92,8 @@ public class TableStructDao {
             String primaryKeyName = primaryKey.getString("COLUMN_NAME");
 
             table.setPkColumn(primaryKeyName);
-            table.getColumnMap().get(primaryKeyName).setPrimaryKey(true);
+            MbListUtil.find(table.getColumns(), item -> item.getName().equals(primaryKeyName)).setPrimaryKey(true);
+            //table.getColumnMap().get(primaryKeyName)
         }
         DBUtil.close(null, null, primaryKey);
 
@@ -99,7 +101,7 @@ public class TableStructDao {
         ResultSet uniqueKey = metaData.getIndexInfo(connection.getCatalog(), null, tableName, true, false);
         while (uniqueKey.next()) {
             String unique = uniqueKey.getString("COLUMN_NAME");
-            table.getColumnMap().get(unique).setUnique(true);
+            MbListUtil.find(table.getColumns(), item -> item.getName().equals(unique)).setUnique(true);
         }
         DBUtil.close(null, null, uniqueKey);
 
