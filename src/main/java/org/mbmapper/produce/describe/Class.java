@@ -4,14 +4,13 @@ import lombok.Data;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.table.Table;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Data
-public class Class implements Serializable {
+public class Class {
 
     /**
      * 包名

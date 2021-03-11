@@ -4,13 +4,12 @@ package org.mbmapper;
 import org.junit.jupiter.api.Test;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.config.MbMapperConfigException;
-import org.mbmapper.produce.MbLog;
-import org.mbmapper.produce.file.JavaFileLoader;
-import org.mbmapper.utils.RegexUtil;
+import org.mbmapper.produce.describe.KeyValue;
+import org.mbmapper.utils.MbCollectionUtil;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.regex.Matcher;
+import java.util.List;
 
 public class TestRun {
 
@@ -33,7 +32,7 @@ public class TestRun {
     @Test
     void test2() throws IOException {
         //MbMapperConfig config = new MbMapperConfig();
-        JavaFileLoader javaFileLoader = new JavaFileLoader("H:\\idea\\mapTest\\vo\\MbMapper.java");
+        /*JavaFileLoader javaFileLoader = new JavaFileLoader("H:\\idea\\mapTest\\vo\\MbMapper.java");
         javaFileLoader.load();
         String javaContent = javaFileLoader.getJavaContent();
         System.out.println(javaContent);
@@ -58,31 +57,19 @@ public class TestRun {
                     System.out.println(javaContent.substring(start,matcher.end()));
                 }
             }
-        }
+        }*/
 
     }
 
-    /*@Test
-    void test3() {
-        String name1 = "AAa_aaa_aaa";
-        String name2 = "_Aaa_aaa_aaa";
-        String name3 = "a_";
-        String name4 = "a";
-
-        System.out.println(toHumpName(name1));
-        System.out.println(toHumpName(name2));
-        System.out.println(toHumpName(name3));
-        System.out.println(toHumpName(name4));
+    @Test
+    void test3() throws MbMapperConfigException {
+        MbMapperConfig config = new MbMapperConfig();
+        System.out.println(config.getVoClassAnnotation());
+        List<String> strings = MbCollectionUtil.parseList(config.getVoClassAnnotation());
+        strings.forEach(item -> {
+            System.out.println(KeyValue.parseKeyValue(item));
+        });
+        //System.out.println();
     }
 
-    String toHumpName(String name) {
-        Matcher matcher = RegexUtil.matcher("(?<=\\w)_(\\w)", name);
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
-        }
-        matcher.appendTail(sb);
-        String s = sb.toString().replace("_","");
-        return s.replaceFirst("\\w",s.substring(0,1).toLowerCase());
-    }*/
 }

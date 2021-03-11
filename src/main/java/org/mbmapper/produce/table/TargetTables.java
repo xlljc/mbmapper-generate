@@ -5,7 +5,7 @@ import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.config.MbMapperConfigException;
 import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.TableStructDao;
-import org.mbmapper.utils.MbListUtil;
+import org.mbmapper.utils.MbCollectionUtil;
 import org.mbmapper.utils.RegexUtil;
 
 import java.sql.SQLException;
@@ -51,7 +51,7 @@ public class TargetTables {
             //获取所有的表
             tableNames = structDao.getAllTableNames();
             //分割表
-            List<String> notTables = Arrays.asList(tablesStr.split(","));
+            List<String> notTables = Arrays.asList(tablesStr.split("(?<!\\\\),"));
             //移除包含的表
             tableNames.removeAll(notTables);
 
@@ -60,7 +60,7 @@ public class TargetTables {
             MbLog.logInfo(String.format("TargetTables.TargetTables(): => Table included [%s].", tablesStr));
 
             //分割表
-            tableNames = new ArrayList<>(Arrays.asList(tablesStr.split(",")));
+            tableNames = new ArrayList<>(Arrays.asList(tablesStr.split("(?<!\\\\),")));
         } else {    //不认识的配置项
             new MbMapperConfigException(String.format("Cannot load configuration 'tables': '%s',please check your syntax.", tablesStr))
                     .printStackTrace();
@@ -122,7 +122,7 @@ public class TargetTables {
 
                 //拼接字符串
                 if (temp.size() > 0)
-                    str += MbListUtil.join(temp, ",", "(", ")");
+                    str += MbCollectionUtil.join(temp, ",", "(", ")");
                 logStr.append(str).append("  ");
             }
             MbLog.log(logStr.toString());

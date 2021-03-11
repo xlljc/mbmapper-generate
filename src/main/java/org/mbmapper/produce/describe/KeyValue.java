@@ -55,4 +55,16 @@ public class KeyValue<K,V> {
     public int hashCode() {
         return Objects.hash(key, value);
     }
+
+    /**
+     * 将字符串装成键值对格式, 用 : 分开, 使用 \: 转义
+     */
+    public static KeyValue<String,String> parseKeyValue(String str) {
+        String str2 = str.replace("^\\{", "").replace("}$", "");
+        String[] arr = str2.split("(?<!\\\\):");
+        if (arr.length != 2) {
+            //throw new
+        }
+        return new KeyValue<>(arr[0], arr[1]);
+    }
 }

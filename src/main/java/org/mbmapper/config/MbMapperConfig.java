@@ -43,6 +43,8 @@ public class MbMapperConfig {
     private boolean useRope = false;
     /** 是否生成代码注释, 默认true */
     private boolean useComment = true;
+    /** vo类上的自定义 */
+    private String voClassAnnotation;
 
     /** 要写出的表, 默认写出所有的表 */
     private String tables = "*";

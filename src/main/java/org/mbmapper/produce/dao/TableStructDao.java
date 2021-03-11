@@ -5,12 +5,11 @@ import org.mbmapper.produce.table.Column;
 import org.mbmapper.produce.table.ForeignKey;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.utils.DBUtil;
-import org.mbmapper.utils.MbListUtil;
+import org.mbmapper.utils.MbCollectionUtil;
 import org.mbmapper.utils.NameUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +91,7 @@ public class TableStructDao {
             String primaryKeyName = primaryKey.getString("COLUMN_NAME");
 
             table.setPkColumn(primaryKeyName);
-            MbListUtil.find(table.getColumns(), item -> item.getName().equals(primaryKeyName)).setPrimaryKey(true);
+            MbCollectionUtil.find(table.getColumns(), item -> item.getName().equals(primaryKeyName)).setPrimaryKey(true);
             //table.getColumnMap().get(primaryKeyName)
         }
         DBUtil.close(null, null, primaryKey);
@@ -101,7 +100,7 @@ public class TableStructDao {
         ResultSet uniqueKey = metaData.getIndexInfo(connection.getCatalog(), null, tableName, true, false);
         while (uniqueKey.next()) {
             String unique = uniqueKey.getString("COLUMN_NAME");
-            MbListUtil.find(table.getColumns(), item -> item.getName().equals(unique)).setUnique(true);
+            MbCollectionUtil.find(table.getColumns(), item -> item.getName().equals(unique)).setUnique(true);
         }
         DBUtil.close(null, null, uniqueKey);
 
