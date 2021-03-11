@@ -3,14 +3,10 @@ package org.mbmapper;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.produce.MbLog;
 import org.mbmapper.produce.dao.ConnectDevice;
-import org.mbmapper.produce.describe.*;
-import org.mbmapper.produce.describe.Class;
-import org.mbmapper.produce.generate.Generate;
-import org.mbmapper.produce.table.Column;
+import org.mbmapper.produce.generate.CodeHandler;
 import org.mbmapper.produce.table.Table;
 import org.mbmapper.produce.table.TargetTables;
 import org.mbmapper.utils.DBUtil;
-import org.mbmapper.utils.NameUtil;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -73,8 +69,8 @@ public class MbMapper {
             targetTables.load();
             List<Table> tables = targetTables.getTables();
 
-            Generate generate = new Generate(config, tables);
-            generate.generate();
+            CodeHandler handler = new CodeHandler(config, tables);
+            handler.dispose();
 
         } catch (SQLException e) {
             MbLog.logError("MbMapper.generateVo() has exception: => " + e.getMessage());

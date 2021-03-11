@@ -54,7 +54,8 @@ public class MbCollectionUtil {
      */
     public static List<String> parseList(String str) {
         return new ArrayList<>(Arrays.asList(
-                str.replaceAll("(\\[\\s*,*)|(,*\\s*])|((?<=[\\[,])\\s+)|(\\s+(?=[],]))", "").split("(?<!\\\\),")));
+                str.replaceAll("(\\[\\s*,*)|(,*\\s*])|((?<=[\\[,])\\s+)|(\\s+(?=[],]))", "")
+                        .split("(?<!\\\\) *, *")));
     }
 
 }
