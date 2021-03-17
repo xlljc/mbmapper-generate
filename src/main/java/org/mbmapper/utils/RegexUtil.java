@@ -28,4 +28,17 @@ public class RegexUtil {
         return Pattern.compile(regex).matcher(str);
     }
 
+    /**
+     * 返回第一个匹配的字符串, 没有匹配就返回null
+     * @param regex 正则表达式
+     * @param str 需要验证的字符串
+     */
+    public static String findFirst(String regex, String str) {
+        Matcher matcher = matcher(regex, str);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
+
 }

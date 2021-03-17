@@ -103,7 +103,6 @@ public class Class {
 
         //类注解
         annotations.forEach((key, annotation) -> {
-            System.out.println("annotation: " + annotation);
             imports.add(annotation.getType().getImportPackage());
             List<KeyValue<String, String>> params = annotation.getParams();
             if (params.size() == 0) {
