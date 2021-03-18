@@ -4,19 +4,14 @@ package org.mbmapper;
 import org.junit.jupiter.api.Test;
 import org.mbmapper.config.MbMapperConfig;
 import org.mbmapper.config.MbMapperConfigException;
-import org.mbmapper.produce.MbLog;
-import org.mbmapper.produce.describe.KeyValue;
-import org.mbmapper.produce.file.JavaFileLoader;
 import org.mbmapper.produce.template.MbMapperTemplateException;
 import org.mbmapper.produce.template.Target;
 import org.mbmapper.produce.template.target.IfTarget;
 import org.mbmapper.utils.FileUtil;
-import org.mbmapper.utils.MbCollectionUtil;
 import org.mbmapper.utils.RegexUtil;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.regex.Matcher;
 
 public class TestRun {
@@ -60,56 +55,89 @@ public class TestRun {
     @Test
     void test3() throws IOException, MbMapperTemplateException {
         String s = FileUtil.loadFile(new File("H:\\idea\\mapTest\\template.txt"));
-        Matcher matcher = RegexUtil.matcher("(<#.+>)|((?<!\\\\)\\$\\{.+})", s);
+        //Matcher matcher = RegexUtil.matcher("(<#.+>)|((?<!\\\\)\\$\\{.+})", s);
+        String code = eachTarget(s, 0);
+        System.out.println("----------------------------- 最终代码: -----------------------------\n" + code);
+    }
 
+    public static String eachTarget(String template, int layer) throws MbMapperTemplateException {
+        StringBuilder code = new StringBuilder();
+        System.out.println("----------------------- eachTarget " + layer + " ----------------------");
+        Matcher matcher = RegexUtil.matcher("(<#\\s*[\\w\\-]+\\s*( *[\\w=\\- \\n]+(\"[^\"\\n]*\")?)*\\s*>)|(</#\\s*[\\w\\-]+\\s*>)", template);
+
+        int index = 0;
         while (matcher.find()) {
-            String str = matcher.group();
+            index++;
+            //如果自己匹配到闭标签, 就抛出异常
+            String closeTarget = matcher.group(4);
+            if (closeTarget != null) {
+                //抛出异常
+                //System.out.println("发现未成对的闭标签: " + closeTarget);
+                //break;
+                continue;
+            }
+            String openTarget = matcher.group(1);
+            System.out.println("<>: " + openTarget);
+            //获取标签名称
+            String name = RegexUtil.findFirst("(?<=<#)[\\w\\-]+", openTarget);
+            if (name != null) {
+                Target target = Target.Load(IfTarget.class, openTarget);
+                //System.out.println("name: " + name + ", target: " + target);
+                //记录位置,到时候还要回滚
+                int start = matcher.start();
 
-            if (str.charAt(0) == '$') {
-                System.out.println("${}: " + str);
-            } else {
-                System.out.println("<>: " + str);
-                //获取标签名称
-                String name = RegexUtil.findFirst("(?<=<#)[\\w]+", str);
-                if (name != null) {
-                    Target target = Target.Load(IfTarget.class, str);
-                    //System.out.println("name: " + name + ", target: " + target);
-                    //记录位置,到时候还要回滚
-                    int start = matcher.start();
-
-                    if(name.equalsIgnoreCase("if")) {
-                        Matcher matcher1 = RegexUtil.matcher("(<# *if.*>)|(</# *if *>)", s);
-                        matcher1.find(start);
-                        System.out.println("start: " + start);
-                        while (matcher1.find()) {
-                            System.out.println("index: " + matcher1.start() + ", g1: " + matcher1.group(1) + ", g2: " + matcher1.group(2));
-                        }
+                Matcher targetMatcher = RegexUtil.matcher(
+                        String.format("(<#\\s*%s\\s*([\\w=\\- \\n]+( *\"[^\"\\n]*\")?)*\\s*>)|(</#\\s*%s\\s*>)", name, name), template);
+                targetMatcher.find(start);
+                //起始和关闭位置
+                int flag = 1, end = -1;
+                while (targetMatcher.find()) {
+                    //开标签
+                    String g1 = targetMatcher.group(1);
+                    //闭标签
+                    String g2 = targetMatcher.group(4);
+                    if (g1 != null) flag++;
+                    else if (g2 != null) flag--;
+                    //达到平衡了就可以出去了
+                    if (flag == 0) {
+                        end = targetMatcher.end();
+                        break;
                     }
-
-                    //matcher.find(start);
-                } else {
-                    System.out.println("未取得名称!");
                 }
 
+                if (end == -1) {   //如果没找到对应的闭标签
+                    System.out.println("发现未成对的开标签: " + openTarget);
+                    //抛出异常
+
+                } else {
+                    //标签字符串
+                    String targetStr = template.substring(start, end);
+                    String bodyStr = targetStr.replaceAll(
+                            String.format("(^<#\\s*%s\\s*([\\w=\\- \\n]+( *\"[^\"\\n]*\")?)*\\s*>[\\t ]*\\n?)|(\\n?[\\t ]*</#\\s*%s\\s*>$)", name, name),"");
+
+
+                    System.out.println("结果: \n" + targetStr);
+
+                    //递归
+                    code.append(eachTarget(bodyStr, layer + 1));
+
+                }
+
+                //matcher.find(start);
+            } else {
+                System.out.println("未取得名称!");
             }
         }
+        if (index == 0) {
+            code.append(template);
+        }
+        return code.toString();
     }
+
+
 
     @Test
     void test4() {
-        Matcher matcher = RegexUtil.matcher("(?<open>\\{)[\\w\\W]*(?<-open>\\})", "{{}}{}{}{}{}");
-        int index = 0;
-        while (matcher.find()) {
-            String str = matcher.group();
-            System.out.println("str: " + str);
-            if (index % 3 == 2) {
-                matcher.find();
-                matcher.find();
-                matcher.find();
-                matcher.find(index);
-                System.out.println("index: " + index);
-            }
-            index ++;
-        }
+
     }
 }
