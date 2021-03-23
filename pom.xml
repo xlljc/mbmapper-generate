@@ -8,7 +8,7 @@
         <version>2.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.mbmapper</groupId>
+    <groupId>com.github.xlljc</groupId>
     <artifactId>mbmapper-generate</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mbmapper-generate</name>
