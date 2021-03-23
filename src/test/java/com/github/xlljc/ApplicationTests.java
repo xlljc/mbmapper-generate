@@ -1,7 +1,7 @@
 package com.github.xlljc;
 
 import org.junit.jupiter.api.Test;
-import com.github.xlljc.test.dao.UserDao;
+//import com.github.xlljc.test.dao.UserDao;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,13 +13,13 @@ import java.net.URL;
 @MapperScan("org.mbmapper_test.test.dao")
 class ApplicationTests {
 
-    @Autowired
-    UserDao userDao;
+    //@Autowired
+    //UserDao userDao;
 
     @Test
     void contextLoads() {
-        System.out.println(userDao.queryTest());
-        System.out.println(userDao.queryAll());
+        /*System.out.println(userDao.queryTest());
+        System.out.println(userDao.queryAll());*/
     }
 
     @Test

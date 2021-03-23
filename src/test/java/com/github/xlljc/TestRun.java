@@ -4,6 +4,7 @@ package com.github.xlljc;
 import com.github.xlljc.config.MbMapperConfig;
 import com.github.xlljc.config.MbMapperConfigException;
 import com.github.xlljc.produce.template.MbMapperTemplateException;
+import com.github.xlljc.produce.template.Template;
 import com.github.xlljc.utils.FileUtil;
 import com.github.xlljc.utils.RegexUtil;
 import org.junit.jupiter.api.Test;
@@ -52,9 +53,11 @@ public class TestRun {
     //匹配成对的标签或者${}
     @Test
     void test3() throws IOException, MbMapperTemplateException {
-        String s = FileUtil.loadFile(new File("H:\\idea\\mapTest\\template.txt"));
+        String s = FileUtil.loadFile(new File("H:\\idea\\mapTest\\template.ctp"));
         //Matcher matcher = RegexUtil.matcher("(<#.+>)|((?<!\\\\)\\$\\{.+})", s);
-        String code = eachTarget(s, 0);
+        System.out.println("----------------------------- 源代码: \n" + s);
+        Template template = new Template(s);
+        String code = template.conversion();
         System.out.println("----------------------------- 最终代码: -----------------------------\n" + code);
     }
 
