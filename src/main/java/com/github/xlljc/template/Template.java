@@ -1,5 +1,7 @@
-package com.github.xlljc.produce.template;
+package com.github.xlljc.template;
 
+import com.github.xlljc.template.guide.TargetGuide;
+import com.github.xlljc.template.target.Target;
 import com.github.xlljc.utils.RegexUtil;
 
 import java.util.regex.Matcher;
@@ -8,48 +10,49 @@ public class Template {
 
     private final String template;
 
-    public Template(String template) {
+    private final TargetGuide guide;
+
+    public Template(String template, TargetGuide guide) {
         this.template = template;
+        this.guide = guide;
     }
 
     public String getTemplate() {
         return template;
     }
 
-    public String conversion() {
+    public String conversion() throws Exception {
         return _conversion(0).toString();
     }
 
 
-    private StringBuilder _conversion(int layer) {
+    private StringBuilder _conversion(int layer) throws Exception {
         StringBuilder template = new StringBuilder(this.template);
         boolean eachFlag = true;
-        while(eachFlag) {
+        while (eachFlag) {
             //查找第一个标签的位置
-            Section section = findFirstTarget(template);
-            if (section.getStart() > 0) {
-                String target = template.substring(section.getStart(), section.getEnd());
-                String content = unwrap(target);
-
-                String targetName = regexTargetName(target);
+            TargetResult targetResult = findFirstTarget(template);
+            if (targetResult.getStart() >= 0) {
+                System.out.println("targetName: <> <#" + targetResult.getName() + ">");
                 //处理标签
+                Target target = Target.Load(guide.findTarget(targetResult.getName()), targetResult);
 
-                StringBuilder result = new Template(content)._conversion(layer + 1);
-                template.replace(section.getStart(), section.getEnd(), result.toString());
+
+                StringBuilder result = new Template(targetResult.getContent(), guide)._conversion(layer + 1);
+                template.replace(targetResult.getStart(), targetResult.getEnd(), result.toString());
             } else {
                 //如果没有, 就结束循环
                 eachFlag = false;
             }
         }
-
         return template;
     }
 
     /**
      * 找到第一个最外层标签, 返回起始点
      */
-    private Section findFirstTarget(StringBuilder template) {
-        Section section = new Section(-1, -1);
+    private TargetResult findFirstTarget(StringBuilder template) {
+        TargetResult targetResult = new TargetResult();
         Matcher openMatcher = regexTarget(template.toString());
         if (openMatcher.find()) { //找到了, 截取标签
             //如果自己匹配到闭标签, 就抛出异常
@@ -62,9 +65,14 @@ public class Template {
             //如果是单标签
             String singleTarget = openMatcher.group(5);
             if (singleTarget != null) {
-                section.setStart(openMatcher.start(5));
-                section.setEnd(openMatcher.end(5));
-                return section;
+                targetResult.setStart(openMatcher.start(5));
+                targetResult.setEnd(openMatcher.end(5));
+                targetResult.setName(regexTargetName(singleTarget));
+                targetResult.setTarget(singleTarget);
+                targetResult.setOpenTarget(singleTarget);
+                targetResult.setContent("");
+                targetResult.setSingle(true);
+                return targetResult;
             }
             //如果是开标签, 则继续
             String openTarget = openMatcher.group(1);
@@ -72,7 +80,7 @@ public class Template {
             int start = openMatcher.start(1);
             Matcher closeMatcher = regexTargetByName(template.toString(), targetName);
             closeMatcher.find(start);
-            int flag = 1, end = -1;
+            int flag = 1;
             while (closeMatcher.find()) {
                 //开标签
                 String g1 = closeMatcher.group(1);
@@ -82,13 +90,18 @@ public class Template {
                 else if (g2 != null) flag--;
                 //达到平衡了就可以出去了
                 if (flag == 0) {
-                    section.setStart(start);
-                    section.setEnd(closeMatcher.end());
-                    return section;
+                    targetResult.setStart(start);
+                    targetResult.setEnd(closeMatcher.end());
+                    String target = template.substring(targetResult.getStart(), targetResult.getEnd());
+                    targetResult.setName(targetName);
+                    targetResult.setTarget(target);
+                    targetResult.setOpenTarget(openTarget);
+                    targetResult.setContent(unwrap(target));
+                    return targetResult;
                 }
             }
         }
-        return section;
+        return targetResult;
     }
 
     /**
@@ -120,7 +133,6 @@ public class Template {
     private String unwrap(String target) {
         return target.replaceAll(
                 "(^<#\\s*[\\w\\-]+\\s*( +[\\w=\\- \\n]+(\"[^\"\\n]*\")?)*\\s*>[\\t ]*\\n?[\\t ]*)|([\\t ]*\\n?[\\t ]*</#\\s*[\\w\\-]+\\s*>$)|(^<#\\s*[\\w\\-]+\\s*( +[\\w=\\- \\n]+(\"[^\"\\n]*\")?)*\\s*/>$)", "");
-                //"(^<#\\s*[\\w\\-]+\\s*( +[\\w=\\- \\n]+(\"[^\"\\n]*\")?)*\\s*>[\\t ]*\\n?)|(\\n?[\\t ]*</#\\s*[\\w\\-]+\\s*>$)|(^<#\\s*[\\w\\-]+\\s*( +[\\w=\\- \\n]+(\"[^\"\\n]*\")?)*\\s*>$)", "");
     }
 
 }
