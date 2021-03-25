@@ -1,6 +1,6 @@
 package com.github.xlljc.template;
 
-import com.github.xlljc.template.guide.TargetGuide;
+import com.github.xlljc.template.guide.Guide;
 import com.github.xlljc.template.target.Target;
 import com.github.xlljc.utils.RegexUtil;
 
@@ -10,9 +10,9 @@ public class Template {
 
     private final String template;
 
-    private final TargetGuide guide;
+    private final Guide<Class<? extends Target>> guide;
 
-    public Template(String template, TargetGuide guide) {
+    public Template(String template, Guide<Class<? extends Target>> guide) {
         this.template = template;
         this.guide = guide;
     }
@@ -35,10 +35,11 @@ public class Template {
             if (targetResult.getStart() >= 0) {
                 System.out.println("targetName: <> <#" + targetResult.getName() + ">");
                 //处理标签
-                Target target = Target.Load(guide.findTarget(targetResult.getName()), targetResult);
+                Target target = Target.Load(guide.find(targetResult.getName()), targetResult);
+                String content = target.beforeProcess(targetResult.getContent());
+                content = target.process(content);
 
-
-                StringBuilder result = new Template(targetResult.getContent(), guide)._conversion(layer + 1);
+                StringBuilder result = new Template(content, guide)._conversion(layer + 1);
                 template.replace(targetResult.getStart(), targetResult.getEnd(), result.toString());
             } else {
                 //如果没有, 就结束循环

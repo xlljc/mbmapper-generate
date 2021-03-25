@@ -1,15 +1,17 @@
 package com.github.xlljc.template.guide;
 
-import com.github.xlljc.template.target.Target;
-
 import java.util.Map;
 
-public interface Registry {
+/**
+ * 注册机
+ * @param <T>
+ */
+public interface Registry<T> {
 
     /**
-     * 注册节点
+     * 注册内容
      * @return 名称 - Class对象 键值对
      */
-    Map<String, Class<? extends Target>> registryTargets();
+    Map<String, T> registry();
 
 }

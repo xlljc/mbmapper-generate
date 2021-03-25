@@ -3,10 +3,11 @@ package com.github.xlljc;
 
 import com.github.xlljc.config.MbMapperConfig;
 import com.github.xlljc.config.MbMapperConfigException;
-import com.github.xlljc.template.MbMapperTemplateException;
 import com.github.xlljc.template.Template;
+import com.github.xlljc.template.guide.Guide;
 import com.github.xlljc.template.guide.TargetGuide;
 import com.github.xlljc.template.guide.TargetRegistry;
+import com.github.xlljc.template.target.Target;
 import com.github.xlljc.utils.FileUtil;
 import com.github.xlljc.utils.RegexUtil;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 
 public class TestRun {
+    //Matcher matcher = RegexUtil.matcher("(<#.+>)|((?<!\\\\)\\$\\{.+})", s);
 
     @Test
     void test1() throws IOException, ClassNotFoundException, MbMapperConfigException, SQLException {
@@ -56,10 +58,13 @@ public class TestRun {
     @Test
     void test3() throws Exception {
         String s = FileUtil.loadFile(new File("H:\\idea\\mapTest\\template.ctp"));
-        //Matcher matcher = RegexUtil.matcher("(<#.+>)|((?<!\\\\)\\$\\{.+})", s);
+        Guide<Class<? extends Target>> guide = new TargetGuide();
+        guide.registry(new TargetRegistry());
+        Template template = new Template(s, guide);
+
 
         System.out.println("----------------------------- 源代码: \n" + s);
-        Template template = new Template(s, TargetGuide.initGuide(new TargetRegistry()));
+
         String code = template.conversion();
         System.out.println("----------------------------- 最终代码: -----------------------------\n" + code);
     }
