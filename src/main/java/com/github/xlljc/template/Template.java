@@ -1,6 +1,6 @@
 package com.github.xlljc.template;
 
-import com.github.xlljc.template.guide.Guide;
+import com.github.xlljc.template.interfaces.Guide;
 import com.github.xlljc.template.target.Target;
 import com.github.xlljc.utils.RegexUtil;
 

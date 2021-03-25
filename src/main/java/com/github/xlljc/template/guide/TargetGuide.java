@@ -1,5 +1,7 @@
 package com.github.xlljc.template.guide;
 
+import com.github.xlljc.template.interfaces.Guide;
+import com.github.xlljc.template.interfaces.Registry;
 import com.github.xlljc.template.target.Target;
 
 import java.util.HashMap;

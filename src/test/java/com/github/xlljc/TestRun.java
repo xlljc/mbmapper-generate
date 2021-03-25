@@ -4,7 +4,7 @@ package com.github.xlljc;
 import com.github.xlljc.config.MbMapperConfig;
 import com.github.xlljc.config.MbMapperConfigException;
 import com.github.xlljc.template.Template;
-import com.github.xlljc.template.guide.Guide;
+import com.github.xlljc.template.interfaces.Guide;
 import com.github.xlljc.template.guide.TargetGuide;
 import com.github.xlljc.template.guide.TargetRegistry;
 import com.github.xlljc.template.target.Target;

@@ -1,4 +1,4 @@
-package com.github.xlljc.template.guide;
+package com.github.xlljc.template.interfaces;
 
 import java.util.Map;
 

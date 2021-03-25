@@ -1,5 +1,6 @@
 package com.github.xlljc.template.guide;
 
+import com.github.xlljc.template.interfaces.Registry;
 import com.github.xlljc.template.target.IfTarget;
 import com.github.xlljc.template.target.Target;
 
