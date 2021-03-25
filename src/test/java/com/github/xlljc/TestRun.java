@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 
 public class TestRun {
-    //Matcher matcher = RegexUtil.matcher("(<#.+>)|((?<!\\\\)\\$\\{.+})", s);
 
     @Test
     void test1() throws IOException, ClassNotFoundException, MbMapperConfigException, SQLException {
@@ -54,14 +53,13 @@ public class TestRun {
         System.out.println(code.toString());
     }
 
-    //匹配成对的标签或者${}
+
     @Test
     void test3() throws Exception {
         String s = FileUtil.loadFile(new File("H:\\idea\\mapTest\\template.ctp"));
         Guide<Class<? extends Target>> guide = new TargetGuide();
         guide.registry(new TargetRegistry());
         Template template = new Template(s, guide);
-
 
         System.out.println("----------------------------- 源代码: \n" + s);
 
