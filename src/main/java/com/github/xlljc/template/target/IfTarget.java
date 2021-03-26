@@ -1,7 +1,11 @@
 package com.github.xlljc.template.target;
 
+import com.github.xlljc.template.annotation.Necessary;
+import com.github.xlljc.template.interfaces.Store;
+
 public class IfTarget extends Target {
 
+    @Necessary
     protected String test;
 
     public IfTarget(String targetName) {
@@ -9,12 +13,13 @@ public class IfTarget extends Target {
     }
 
     @Override
-    public String beforeProcess(String content) {
+    public String beforeProcess(String content, Store store) {
+
         return content;
     }
 
     @Override
-    public String process(String content) {
+    public String process(String content, Store store) {
         return content + ",,,";
     }
 

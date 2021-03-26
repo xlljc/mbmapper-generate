@@ -1,4 +1,4 @@
-package com.github.xlljc.template.guide;
+package com.github.xlljc.template.store;
 
 import com.github.xlljc.template.interfaces.Registry;
 import com.github.xlljc.template.target.IfTarget;

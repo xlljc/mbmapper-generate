@@ -1,4 +1,4 @@
-package com.github.xlljc.template;
+package com.github.xlljc.template.execption;
 
 import com.github.xlljc.MbMapperException;
 

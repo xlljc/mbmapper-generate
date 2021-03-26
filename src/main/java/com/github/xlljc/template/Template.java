@@ -36,8 +36,8 @@ public class Template {
                 System.out.println("targetName: <> <#" + targetResult.getName() + ">");
                 //处理标签
                 Target target = Target.Load(guide.find(targetResult.getName()), targetResult);
-                String content = target.beforeProcess(targetResult.getContent());
-                content = target.process(content);
+                String content = target.beforeProcess(targetResult.getContent(), null);
+                content = target.process(content, null);
 
                 StringBuilder result = new Template(content, guide)._conversion(layer + 1);
                 template.replace(targetResult.getStart(), targetResult.getEnd(), result.toString());

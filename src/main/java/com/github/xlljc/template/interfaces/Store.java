@@ -15,7 +15,13 @@ public interface Store {
     void declareLocalReadonlyVar(String route, Object value);
 
 
-    Object acquire(String route);
+    Object getVal(String route);
+
+
+    void setVal(String route, Object value);
+
+
+    void lock();
 
     /**
      * 复制一份仓库, 内容不变, 全局变量会被保存下来

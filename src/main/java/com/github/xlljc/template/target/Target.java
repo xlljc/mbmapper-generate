@@ -1,6 +1,7 @@
 package com.github.xlljc.template.target;
 
 import com.github.xlljc.template.TargetResult;
+import com.github.xlljc.template.interfaces.Store;
 import com.github.xlljc.utils.RegexUtil;
 
 import java.lang.reflect.Constructor;
@@ -73,8 +74,8 @@ public abstract class Target {
         field.set(this, value);
     }
 
-    public abstract String beforeProcess(String content);
+    public abstract String beforeProcess(String content, Store store);
 
-    public abstract String process(String content);
+    public abstract String process(String content, Store store);
 
 }
