@@ -1,11 +1,11 @@
 package com.github.xlljc.template.target;
 
-import com.github.xlljc.template.annotation.Necessary;
+import com.github.xlljc.template.annotation.Attribute;
 import com.github.xlljc.template.interfaces.Store;
 
 public class IfTarget extends Target {
 
-    @Necessary
+    @Attribute
     protected String test;
 
     public IfTarget(String targetName) {

@@ -25,6 +25,16 @@ public abstract class Target {
         return targetName;
     }
 
+    public abstract String beforeProcess(String content, Store store);
+
+    public abstract String process(String content, Store store);
+
+    protected void setValue(String attrName, String value) throws NoSuchFieldException, IllegalAccessException {
+        Field field = this.getClass().getDeclaredField(attrName);
+        field.setAccessible(true);
+        field.set(this, value);
+    }
+
     /**
      * 从字符串加载Target对象,
      * @param cls 创建的类
@@ -67,15 +77,5 @@ public abstract class Target {
 
         return inst;
     }
-
-    protected void setValue(String attrName, String value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = this.getClass().getDeclaredField(attrName);
-        field.setAccessible(true);
-        field.set(this, value);
-    }
-
-    public abstract String beforeProcess(String content, Store store);
-
-    public abstract String process(String content, Store store);
 
 }

@@ -5,8 +5,7 @@ import com.github.xlljc.config.MbMapperConfig;
 import com.github.xlljc.config.MbMapperConfigException;
 import com.github.xlljc.template.Template;
 import com.github.xlljc.template.interfaces.Guide;
-import com.github.xlljc.template.store.TargetGuide;
-import com.github.xlljc.template.store.TargetRegistry;
+import com.github.xlljc.template.store.*;
 import com.github.xlljc.template.target.Target;
 import com.github.xlljc.utils.FileUtil;
 import com.github.xlljc.utils.RegexUtil;
@@ -68,12 +67,29 @@ public class TestRun {
     }
 
 
+    /**
+     * 测试 DataStore
+     */
     @Test
     void test4() {
-        String[] split = ".config.aaa..bbb.".split("\\.");
-        for (String s : split) {
-            System.out.println("item: " + s);
-        }
-        System.out.println(RegexUtil.matches("^\\w+(((\\.\\w+)*)|((\\.\\w+)*\\(((('[^n]*')|(\\w+(\\.\\w+)*))( *, *(('[^n]*')|(\\w+(\\.\\w+)*)))*)?\\)))$", "config.aaa.bbb"));
+        DataStore store = new DataStore();
+        Object val = store.getVal("com.xl.val");
+        System.out.println(val);
+        store.setVal("com.xl", "666");
+    }
+
+    @Test
+    void test5() {
+        StoreRouteNode root = new StoreRouteNode();
+        Value value = new Value();
+        value.setValue("666");
+        StoreRouteNode child = new StoreRouteNode();
+        child.setValue(value);
+        root.appendChild("com",child);
+        System.out.println(root.findChild("com").getValue().getValue());
+        root.setValue(new Value());
+        child.appendChild("guigu",new StoreRouteNode());
+        System.out.println(root.getValue());
+        System.out.println(child.getChildren());
     }
 }

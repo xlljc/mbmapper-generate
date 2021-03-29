@@ -16,7 +16,13 @@ public class Value {
         readOnly
     }
 
+    /**
+     * 访问权限
+     */
     private Access access = Access.writeAndRead;
+    /**
+     * 值
+     */
     private Object value;
 
     public Value() {
