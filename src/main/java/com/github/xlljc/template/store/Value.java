@@ -28,6 +28,10 @@ public class Value {
     public Value() {
     }
 
+    public Value(Object value) {
+        this.value = value;
+    }
+
     public Value(Access access, Object value) {
         this.access = access;
         this.value = value;

@@ -7,13 +7,21 @@ import java.util.Map;
 
 public class StoreRouteNode implements RouteNode {
 
-    private Value value = new Value();
+    private enum Role {
+        none,
+        routeNode,
+        valueNode
+    }
+
+    private final Value value = new Value();
+
+    private Role currentRole = Role.none;
 
     @Override
     public RouteNode findChild(String childName) {
         if (!isEmpty()) {
             if (isRouteNode()) {
-                return ((Map<String, RouteNode>) value.getValue()).get(childName);
+                return getChildren().get(childName);
             } else {
                 System.err.println("当前路由无法获取子路由, 因为它是值节点!");
             }
@@ -29,8 +37,12 @@ public class StoreRouteNode implements RouteNode {
         if (isEmpty()) { //还没设置过值
             map = new HashMap<>();
             value.setValue(map);
+            currentRole = Role.routeNode;
         } else if (isRouteNode()) { //已经被设置过值, 且不是值节点
-            map = (Map<String, RouteNode>) value.getValue();
+            map = getChildren();
+            if (map.containsKey(childName)) {
+                System.err.println("该路由: " + childName + " 已经存在!");
+            }
         } else { //是值节点, 不能创建子节点
             System.err.println("无法创建子级路由, 因为他是值路由");
             return;
@@ -40,7 +52,10 @@ public class StoreRouteNode implements RouteNode {
 
     @Override
     public Map<String, RouteNode> getChildren() {
-        if (isEmpty() || isValueNode()) {
+        if (isEmpty()) {
+            System.err.println("无法获取节点值, 因为它是空节点");
+            return null;
+        } else if (isValueNode()) {
             System.err.println("无法获取子级节点, 因为它不是节点路由");
             return null;
         }
@@ -49,7 +64,10 @@ public class StoreRouteNode implements RouteNode {
 
     @Override
     public Value getValue() {
-        if (isEmpty() || isRouteNode()) {
+        if (isEmpty()) {
+            System.err.println("无法获取节点值, 因为它是空节点");
+            return null;
+        } else if (isRouteNode()) {
             System.err.println("无法获取节点值, 因为它不是值节点");
             return null;
         }
@@ -60,9 +78,8 @@ public class StoreRouteNode implements RouteNode {
     public void setValue(Value value) {
         if (isRouteNode()) {
             System.err.println("无法设置值给当前路由, 因为它不是值节点!");
-        } else if (value.getValue() instanceof Map) {
-            System.err.println("不能设置值类型为Map, 这样会导致冲突!");
         } else {
+            currentRole = Role.valueNode;
             this.value.setValue(value.getValue());
             this.value.setAccess(value.getAccess());
         }
@@ -75,11 +92,11 @@ public class StoreRouteNode implements RouteNode {
 
     @Override
     public boolean isValueNode() {
-        return !isRouteNode();
+        return currentRole == Role.valueNode;
     }
 
     @Override
     public boolean isRouteNode() {
-        return value.getValue() instanceof Map;
+        return currentRole == Role.routeNode;
     }
 }

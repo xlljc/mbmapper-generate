@@ -6,6 +6,7 @@ import com.github.xlljc.config.MbMapperConfigException;
 import com.github.xlljc.template.Template;
 import com.github.xlljc.template.interfaces.Guide;
 import com.github.xlljc.template.store.*;
+import com.github.xlljc.template.target.IfTarget;
 import com.github.xlljc.template.target.Target;
 import com.github.xlljc.utils.FileUtil;
 import com.github.xlljc.utils.RegexUtil;
@@ -73,9 +74,16 @@ public class TestRun {
     @Test
     void test4() {
         DataStore store = new DataStore();
-        Object val = store.getVal("com.xl.val");
-        System.out.println(val);
-        store.setVal("com.xl", "666");
+        store.lock();
+        store.declareVar("com.xl.aaa", "aaa");
+        store.declareReadonlyVar("com.xl.bbb", "bbb");
+        store.setVal("com.xl.aaa", "3a");
+        store.setVal("com.xl.bbb.value", new char[]{'3', 'b'});
+
+        System.out.println(store.getVal("com.xl.aaa"));
+        System.out.println(store.getVal("com.xl.bbb"));
+
+        store.printData();
     }
 
     @Test

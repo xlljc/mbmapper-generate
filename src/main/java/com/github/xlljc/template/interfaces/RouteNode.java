@@ -32,7 +32,7 @@ public interface RouteNode {
     Value getValue();
 
     /**
-     * 设置当前节点绑定的值, 当value的值为Map时设置值会抛出异常
+     * 设置当前节点绑定的值
      */
     void setValue(Value value);
 
